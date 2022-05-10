@@ -3,19 +3,12 @@ const User = require("../models/user");
 const auth = require("../middleware/auth");
 const router = new express.Router();
 
-router.get("/test", (req, res) => {
-  res.send("From a new file.");
-});
-
 router.post("/users", async (req, res) => {
   const user = new User(req.body);
 
   try {
     await user.save();
     const token = await user.generateAuthToken();
-
-    res.cookie("auth_token", token);
-    res.sendFile(path.resolve(__dirname, "..", "views", "private.html"));
 
     res.status(201).send({ user, token });
   } catch (error) {
