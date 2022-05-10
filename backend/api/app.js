@@ -1,7 +1,6 @@
-require("../database/connect");
+require("../config/database");
 
 const express = require("express");
-const cookieParser = require("cookie-parser");
 
 const userRouter = require("./routes/user");
 const taskRouter = require("./routes/task");

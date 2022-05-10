@@ -3,24 +3,25 @@ const User = require("../models/user");
 
 const auth = async (req, res, next) => {
   try {
-    const token = req.header('Authorization').replace('Bearer ', '')
-    const decoded = jwt.verify(token, "thisIsASecretMessage");
-    const user = await User.findOne({
-      _id: decoded._id,
-      "tokens.token": token,
-    });
+    const token = req
+      .header("Authorization")
+      .replace("Bearer ", ""); /* TODO: Change this to work with React. */
+    const verification = jwt.verify(
+      token,
+      "thisIsASecretMessage"
+    ); /* TODO: Change secret. */
 
-    if (!user) {
-      throw new Error();
+    if (verification) {
+      req.user = await User.findOne({
+        _id: verification._id,
+        "tokens.token": token,
+      });
+      req.token = token;
+      next();
     }
-
-    req.token = token;
-    req.user = user;
-
-    next();
   } catch (error) {
     console.log(error);
-    res.status(401).send({ error: "Please authenticate. " });
+    res.status(401).send({ error: "Authentication failed, please log in. " });
   }
 };
 

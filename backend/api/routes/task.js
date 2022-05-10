@@ -5,7 +5,35 @@ const auth = require("../middleware/auth");
 
 const router = new express.Router();
 
+router.get("/tasks", auth, async (req, res) => {
+  try {
+    const tasks = await Task.find({ createdBy: req.user._id });
+    res.send(tasks);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
+
+router.get("/tasks/:id", auth, async (req, res) => {
+  try {
+    const task = await Task.findOne({
+      _id: req.params.id,
+      createdBy: req.user._id,
+    });
+
+    if (!task) {
+      return res.status(404).send();
+    }
+
+    res.status(200).send(task);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 router.post("/tasks", auth, async (req, res) => {
+  // TODO: Substitute object and ...
   const task = new Task({
     ...req.body,
     createdBy: req.user._id,
@@ -19,42 +47,20 @@ router.post("/tasks", auth, async (req, res) => {
   }
 });
 
-router.get("/tasks", auth, async (req, res) => {
-  try {
-    const tasks = await Task.find({ createdBy: req.user._id });
-
-    res.send(tasks);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-router.get("/tasks/:id", auth, async (req, res) => {
-  const _id = req.params.id;
-
-  try {
-    const task = await Task.findOne({ _id, createdBy: req.user._id });
-
-    if (!task) {
-      return res.status(404).send();
-    }
-
-    res.status(200).send(task);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send(error);
-  }
-});
-
+// TODO: Change up the function more.
 router.patch("/tasks/:id", auth, async (req, res) => {
-  const updates = Object.keys(req.body);
-  const allowedUpdates = ["description", "completed"];
-  const isValidOperation = updates.every((update) => {
+  const requestedUpdates = Object.keys(req.body);
+  const allowedUpdates = [
+    "description",
+    "completed",
+  ]; /* TODO: Update allowed updates list. */
+
+  const isValid = requestedUpdates.every((update) => {
     return allowedUpdates.includes(update);
   });
 
-  if (!isValidOperation) {
-    return res.status(400).send({ error: "Invalid updates." });
+  if (!isValid) {
+    return res.status(400).send({ error: "Updates not permitted." });
   }
 
   try {
@@ -66,7 +72,8 @@ router.patch("/tasks/:id", auth, async (req, res) => {
     if (!task) {
       return res.status(404).send();
     }
-    updates.forEach((update) => {
+
+    requestedUpdates.forEach((update) => {
       task[update] = req.body[update];
     });
 
@@ -84,9 +91,11 @@ router.delete("/tasks/:id", auth, async (req, res) => {
       _id: req.params.id,
       createdBy: req.user._id,
     });
+
     if (!task) {
       return res.status(404).send();
     }
+
     res.send(task);
   } catch (error) {
     res.status(500).send();

@@ -1,7 +1,14 @@
 const express = require("express");
+
 const User = require("../models/user");
 const auth = require("../middleware/auth");
+
 const router = new express.Router();
+
+// TODO: Possibly add admin functionality, so admin can view all tasks and all users?
+router.get("/users/me", auth, async (req, res) => {
+  res.send(req.user);
+});
 
 router.post("/users", async (req, res) => {
   const user = new User(req.body);
@@ -14,10 +21,6 @@ router.post("/users", async (req, res) => {
   } catch (error) {
     res.status(400).send(error);
   }
-});
-
-router.get("/users/me", auth, async (req, res) => {
-  res.send(req.user);
 });
 
 router.post("/users/login", async (req, res) => {
@@ -47,6 +50,7 @@ router.post("/users/logout", auth, async (req, res) => {
 
     res.send();
   } catch (error) {
+    console.log(error);
     res.status(500).send();
   }
 });

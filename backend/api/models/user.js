@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
     validate(value) {
       if (value.length < 8) {
-        throw new Error("Password is too short, please try again.");
+        throw new Error("A password has to be at least 7 symbols long.");
       }
     },
   },
@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate(value) {
       if (!validator.isEmail(value)) {
-        throw new Error("Email is invalid.");
+        throw new Error("Format of entered email is invalid.");
       }
     },
   },
@@ -67,28 +67,27 @@ userSchema.virtual("tasks", {
 });
 
 userSchema.methods.toJSON = function () {
-  const user = this;
-  const userObject = user.toObject();
+  const sanitizedOutput = this.toObject();
 
-  delete userObject.password;
-  delete userObject.tokens;
+  delete sanitizedOutput.password;
+  delete sanitizedOutput.tokens;
 
-  return userObject;
+  return sanitizedOutput;
 };
 
 userSchema.methods.generateAuthToken = async function () {
-  const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, "thisIsASecretMessage");
+  const token = jwt.sign({ _id: this._id.toString() }, "thisIsASecretMessage");
 
-  user.tokens = user.tokens.concat({
+  this.tokens = this.tokens.concat({
     token: token,
   });
 
-  await user.save();
+  await this.save();
 
   return token;
 };
 
+// TODO: Change to username and password checking.
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email: email });
 
@@ -97,6 +96,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
+
   if (!isMatch) {
     throw new Error("Unable to login, password did not match.");
   }
@@ -105,20 +105,14 @@ userSchema.statics.findByCredentials = async (email, password) => {
 };
 
 userSchema.pre("save", async function (next) {
-  const user = this;
-
-  if (user.isModified("password")) {
-    user.password = await bcrypt.hash(user.password, 8);
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 8);
   }
-
   next();
 });
 
 userSchema.pre("remove", async function (next) {
-  const user = this;
-
-  await Task.deleteMany({ owner: user._id });
-
+  await Task.deleteMany({ owner: this._id });
   next();
 });
 
