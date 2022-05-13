@@ -33,7 +33,6 @@ router.get("/tasks/:id", auth, async (req, res) => {
 });
 
 router.post("/tasks", auth, async (req, res) => {
-  // TODO: Substitute object and ...
   const task = new Task({
     ...req.body,
     createdBy: req.user._id,
@@ -51,9 +50,13 @@ router.post("/tasks", auth, async (req, res) => {
 router.patch("/tasks/:id", auth, async (req, res) => {
   const requestedUpdates = Object.keys(req.body);
   const allowedUpdates = [
-    "description",
+    "category",
+    "dueDate",
     "completed",
-  ]; /* TODO: Update allowed updates list. */
+    "name",
+    "description",
+    "priority",
+  ];
 
   const isValid = requestedUpdates.every((update) => {
     return allowedUpdates.includes(update);
@@ -98,7 +101,7 @@ router.delete("/tasks/:id", auth, async (req, res) => {
 
     res.send(task);
   } catch (error) {
-    res.status(500).send();
+    res.status(500).send(error);
   }
 });
 

@@ -5,7 +5,6 @@ const auth = require("../middleware/auth");
 
 const router = new express.Router();
 
-// TODO: Possibly add admin functionality, so admin can view all tasks and all users?
 router.get("/users/me", auth, async (req, res) => {
   res.send(req.user);
 });
@@ -29,6 +28,10 @@ router.post("/users/login", async (req, res) => {
       req.body.email,
       req.body.password
     );
+
+    // When user logs in and is issued a token, updates lastLogin to current time.
+    user.lastLogin = Date.now();
+
     const token = await user.generateAuthToken();
 
     res.send({
@@ -36,8 +39,7 @@ router.post("/users/login", async (req, res) => {
       token,
     });
   } catch (error) {
-    console.log(error);
-    res.status(400).send();
+    res.status(400).send(error);
   }
 });
 
@@ -46,12 +48,12 @@ router.post("/users/logout", auth, async (req, res) => {
     req.user.tokens = req.user.tokens.filter((token) => {
       return token.token !== req.token;
     });
+
     await req.user.save();
 
     res.send();
   } catch (error) {
-    console.log(error);
-    res.status(500).send();
+    res.status(500).send(error);
   }
 });
 

@@ -14,15 +14,9 @@ const taskSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  dueDate: {
-    type: Date,
-  },
   completed: {
     type: Boolean,
     default: false,
-  },
-  completionDate: {
-    type: Date,
   },
   name: {
     type: String,
@@ -38,7 +32,27 @@ const taskSchema = new mongoose.Schema({
     type: Number,
     default: 3,
   },
+  frequency: {
+    type: String,
+    default: "Daily",
+  },
+  // TODO: Make sure that if frequency is not daily, nextDueDate is different as well.
+  // TODO: nextDueDate triggers a function that unchecks the complete state and adds completed task to user total score.
+  nextDueDate: {
+    type: Date,
+    default: getNextDay(),
+  },
+  goal: {
+    type: Number,
+    default: 1,
+  },
 });
+
+function getNextDay() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow;
+}
 
 const Task = mongoose.model("task", taskSchema);
 

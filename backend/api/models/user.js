@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: true,
-    timestamp: true,
   },
   password: {
     type: String,
@@ -19,7 +18,8 @@ const userSchema = new mongoose.Schema({
     trim: true,
     validate(value) {
       if (value.length < 8) {
-        throw new Error("A password has to be at least 7 symbols long.");
+        // TODO: Add extra password rules, not just length.
+        throw new Error("Password is too short, has to be at least 7 symbols.");
       }
     },
   },
@@ -31,21 +31,37 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate(value) {
       if (!validator.isEmail(value)) {
-        throw new Error("Format of entered email is invalid.");
+        throw new Error("Invalid email.");
       }
     },
   },
+  createdIn: {
+    type: Date,
+    default: Date.now(),
+  },
+  updatedIn: {
+    type: Date,
+    default: Date.now(),
+  },
   lastLogin: {
     type: Date,
+    // When account is created, first token is issued, so this is the first login.
+    default: Date.now(),
   },
-  dayStart: {
-    type: String,
-    default: "Monday",
-  },
-  timezoneDiff: {
+  // TODO: Reset these at the start of the week and show them in a push notification.
+  doneTasks: {
     type: Number,
     default: 0,
   },
+  doneRecurring: {
+    type: Number,
+    default: 0,
+  },
+  doneHabits: {
+    type: Number,
+    default: 0,
+  },
+  // TODO: Add custom start day that all tasks start on and count day/week/month from for habits/recurring tasks.
   isNotified: {
     type: Boolean,
     default: true,
@@ -58,6 +74,7 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  // TODO: If enough time is left, implement isAdmin with admin panel.
 });
 
 userSchema.virtual("tasks", {
@@ -76,6 +93,7 @@ userSchema.methods.toJSON = function () {
 };
 
 userSchema.methods.generateAuthToken = async function () {
+  // TODO: Hide secret in .env file that does not get pushed to Github.
   const token = jwt.sign({ _id: this._id.toString() }, "thisIsASecretMessage");
 
   this.tokens = this.tokens.concat({
@@ -87,7 +105,6 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-// TODO: Change to username and password checking.
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email: email });
 

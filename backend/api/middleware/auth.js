@@ -3,9 +3,8 @@ const User = require("../models/user");
 
 const auth = async (req, res, next) => {
   try {
-    const token = req
-      .header("Authorization")
-      .replace("Bearer ", ""); /* TODO: Change this to work with React. */
+    const token = req.headers.auth_token;
+
     const verification = jwt.verify(
       token,
       "thisIsASecretMessage"
