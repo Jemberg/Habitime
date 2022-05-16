@@ -1,6 +1,7 @@
 const express = require("express");
 
 const Task = require("../models/task");
+const User = require("../models/user");
 const auth = require("../middleware/auth");
 
 const router = new express.Router();
@@ -35,14 +36,20 @@ router.get("/tasks/:id", auth, async (req, res) => {
 });
 
 router.post("/tasks", auth, async (req, res) => {
+  const user = await User.findOne({ _id: req.body.user });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
   const task = new Task({
-    ...req.body,
-    createdBy: req.user._id,
+    name: req.body.name,
+    createdBy: user._id,
   });
 
   try {
     await task.save();
-    res.status(201).send({ success: true, user: user });
+    res.status(201).send({ success: true, task: task });
   } catch (error) {
     res.status(400).send({ success: false, error: error.message });
   }

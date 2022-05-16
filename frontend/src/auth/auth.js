@@ -5,7 +5,7 @@ export const authenticate = (response, next) => {
     Cookie.set("token", response.token, {
       expires: 7,
     });
-    console.log(response.token);
+
     localStorage.setItem("user", JSON.stringify(response.user));
     next();
   }

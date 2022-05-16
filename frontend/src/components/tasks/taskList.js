@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import React, { useEffect, useState, Fragment, Section, Form } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 import { checkAuthentication } from "../../auth/auth";
 import Layout from "../layout";
@@ -40,9 +40,10 @@ const TaskList = () => {
   const [taskList, setTaskList] = useState([]);
 
   const addTask = async (item) => {
-    console.log(item);
+    // TODO: Check if task properties are empty.
 
     var raw = JSON.stringify({
+      user: checkAuthentication()._id,
       name: item.name,
       description: item.description,
     });
@@ -63,27 +64,12 @@ const TaskList = () => {
           throw new Error(`There was an error: ${parsed.error}`);
         }
 
-        console.log(parsed.tasks);
-        setTaskList((oldList) => [...oldList, parsed.tasks]);
+        setTaskList((oldList) => [...oldList, parsed.task]);
       })
       .catch((error) => {
         console.log("error", error);
         toast.error(error.message);
       });
-
-    // await api
-    //   .post("/tasks", {
-    //     description: item.description,
-    //     completed: item.completed,
-    //   })
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     console.log(taskList);
-    //     setTaskList((oldList) => [...oldList, response.data]);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   };
 
   const removeTask = async (id) => {
@@ -124,18 +110,33 @@ const TaskList = () => {
     </Fragment>
   ));
 
-  const [name, setName] = useState("");
+  const [item, setItem] = useState({
+    name: "",
+    description: "",
+  });
 
   const handleChange = (event) => {
-    setName(event.target.value);
+    setItem({ ...item, [event.target.name]: event.target.value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log("Test.");
+    addTask(item);
   };
 
   return (
     <Fragment>
-      {/* <input type="text" value={name} onChange={handleChange} />
-      <button type="submit" onSubmit={addTask({ name: name })}>
-        Click me!
-      </button> */}
+      <ToastContainer />
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={item.name}
+          name="name"
+          onChange={handleChange}
+        />
+        <button type="submit">Click me!</button>
+      </form>
       <div>{renderList}</div>
     </Fragment>
   );
