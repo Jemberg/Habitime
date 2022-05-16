@@ -9,9 +9,9 @@ const router = new express.Router();
 router.get("/categories", auth, async (request, response) => {
   try {
     const categories = await Category.find({ createdBy: request.user._id });
-    response.send(categories);
+    response.status(200).send({ success: true, categories: categories });
   } catch (error) {
-    response.status(500).send(error);
+    response.status(500).send({ success: false, error: error.message });
   }
 });
 
@@ -26,12 +26,14 @@ router.get("/categories/:id", auth, async (request, response) => {
     });
 
     if (!category) {
-      return response.status(404).send();
+      return response
+        .status(404)
+        .send({ success: false, error: "Category not found." });
     }
 
-    response.status(200).send(category);
+    response.status(200).send({ success: true, category: category });
   } catch (error) {
-    response.status(500).send(error);
+    response.status(500).send({ success: false, error: error.message });
   }
 });
 
@@ -43,9 +45,9 @@ router.post("/categories", auth, async (request, response) => {
 
   try {
     await category.save();
-    response.status(201).send(category);
+    response.status(201).send({ success: true, category: category });
   } catch (error) {
-    response.status(400).send(error);
+    response.status(400).send({ success: false, error: error.message });
   }
 });
 
@@ -63,7 +65,9 @@ router.patch("/categoties/:id", auth, async (request, response) => {
   });
 
   if (!isValid) {
-    return response.status(400).send({ error: "Invalid updates." });
+    return response
+      .status(400)
+      .send({ success: false, error: "Updates are invalid." });
   }
 
   try {
@@ -73,7 +77,9 @@ router.patch("/categoties/:id", auth, async (request, response) => {
     });
 
     if (!category) {
-      return response.status(404).send();
+      return response
+        .status(404)
+        .send({ success: false, error: "Category not found." });
     }
 
     requestedUpdates.forEach((update) => {
@@ -82,9 +88,9 @@ router.patch("/categoties/:id", auth, async (request, response) => {
 
     await category.save();
 
-    response.send(category);
+    response.status(200).send({ success: true, category: category });
   } catch (error) {
-    response.status(400).send(error);
+    response.status(400).send({ success: false, error: error.message });
   }
 });
 
@@ -96,12 +102,14 @@ router.delete("/categories/:id", auth, async (request, response) => {
     });
 
     if (!category) {
-      return response.status(404).send();
+      return response
+        .status(404)
+        .send({ success: false, error: "Category not found." });
     }
 
-    response.send(category);
+    response.status(200).send({ success: true, category: category });
   } catch (error) {
-    response.status(500).send(error);
+    response.status(500).send({ success: false, error: error.message });
   }
 });
 

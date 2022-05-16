@@ -8,10 +8,10 @@ const router = new express.Router();
 router.get("/periodical", auth, async (request, response) => {
   try {
     const habits = await Periodical.find({ createdBy: request.user._id });
-    response.send(habits);
+    response.status(200).send({ success: true, habits: habits });
   } catch (error) {
     console.log(error);
-    response.status(500).send(error);
+    response.status(500).send({ success: false, error: error.message });
   }
 });
 
@@ -26,12 +26,12 @@ router.get("/periodical/:id", auth, async (request, response) => {
       // TODO: Add json responses where possible in code.
       return response
         .status(404)
-        .json({ error: "Periodical task has not been found." });
+        .send({ success: false, error: "Periodical task has not been found." });
     }
 
-    response.status(200).send(periodical);
+    response.status(200).send({ success: true, periodical: periodical });
   } catch (error) {
-    response.status(500).send(error);
+    response.status(500).send({ success: false, error: error.message });
   }
 });
 
@@ -43,9 +43,9 @@ router.post("/periodical", auth, async (request, response) => {
 
   try {
     await periodical.save();
-    response.status(201).send(periodical);
+    response.status(201).send({ success: true, periodical: periodical });
   } catch (error) {
-    response.status(400).send(error);
+    response.status(400).send({ success: false, error: error.message });
   }
 });
 
@@ -70,7 +70,9 @@ router.patch("/periodical/:id", auth, async (request, response) => {
   });
 
   if (!isValid) {
-    return response.status(400).send({ error: "Updates not permitted." });
+    return response
+      .status(400)
+      .send({ success: false, error: "Update not permitted." });
   }
 
   try {
@@ -80,7 +82,9 @@ router.patch("/periodical/:id", auth, async (request, response) => {
     });
 
     if (!periodical) {
-      return response.status(404).send();
+      return response
+        .status(404)
+        .send({ success: false, error: "Periodical task has not been found." });
     }
 
     requestedUpdates.forEach((update) => {
@@ -89,9 +93,9 @@ router.patch("/periodical/:id", auth, async (request, response) => {
 
     await periodical.save();
 
-    response.send(periodical);
+    response.status(200).send({ success: true, periodical: periodical });
   } catch (error) {
-    response.status(400).send(error);
+    response.status(400).send({ success: false, error: error.message });
   }
 });
 
@@ -103,11 +107,13 @@ router.delete("/periodical/:id", auth, async (request, response) => {
     });
 
     if (!periodical) {
-      return response.status(404).send();
+      return response
+        .status(404)
+        .send({ success: false, error: "Periodical task not found." });
     }
 
-    response.send(periodical);
+    response.status(200).send({ success: true, periodical: periodical });
   } catch (error) {
-    response.status(500).send(error);
+    response.status(500).send({ success: false, error: error.message });
   }
 });

@@ -8,10 +8,10 @@ const router = new express.Router();
 router.get("/tasks", auth, async (req, res) => {
   try {
     const tasks = await Task.find({ createdBy: req.user._id });
-    res.send(tasks);
+    res.status(200).send({ success: true, tasks: tasks });
   } catch (error) {
     console.log(error);
-    res.status(500).send(error);
+    res.status(500).send({ success: false, error: error.message });
   }
 });
 
@@ -23,12 +23,14 @@ router.get("/tasks/:id", auth, async (req, res) => {
     });
 
     if (!task) {
-      return res.status(404).send();
+      return res
+        .status(404)
+        .send({ success: false, error: "Task has not been found" });
     }
 
-    res.status(200).send(task);
+    res.status(200).send({ success: true, task: task });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send({ success: false, error: error.message });
   }
 });
 
@@ -40,9 +42,9 @@ router.post("/tasks", auth, async (req, res) => {
 
   try {
     await task.save();
-    res.status(201).send(task);
+    res.status(201).send({ success: true, user: user });
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).send({ success: false, error: error.message });
   }
 });
 
@@ -63,7 +65,9 @@ router.patch("/tasks/:id", auth, async (req, res) => {
   });
 
   if (!isValid) {
-    return res.status(400).send({ error: "Updates not permitted." });
+    return res
+      .status(400)
+      .send({ success: false, error: "Updates not permitted." });
   }
 
   try {
@@ -73,7 +77,9 @@ router.patch("/tasks/:id", auth, async (req, res) => {
     });
 
     if (!task) {
-      return res.status(404).send();
+      return res
+        .status(404)
+        .send({ success: false, error: "Task has not been found." });
     }
 
     requestedUpdates.forEach((update) => {
@@ -82,9 +88,9 @@ router.patch("/tasks/:id", auth, async (req, res) => {
 
     await task.save();
 
-    res.send(task);
+    res.send({ success: true, task: task });
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).send({ success: false, error: error.message });
   }
 });
 
@@ -96,12 +102,14 @@ router.delete("/tasks/:id", auth, async (req, res) => {
     });
 
     if (!task) {
-      return res.status(404).send();
+      return res
+        .status(404)
+        .send({ success: false, error: "Task has not been found." });
     }
 
-    res.send(task);
+    res.send({ success: true, task: task });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send({ success: false, error: error.message });
   }
 });
 

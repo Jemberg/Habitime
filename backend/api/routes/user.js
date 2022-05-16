@@ -1,7 +1,7 @@
 const express = require("express");
 
 const User = require("../models/user");
-const auth = require("../middleware/auth");
+const auth = require("../middleware/auth"); /* TODO: Change auth to authenticate. */
 
 const router = new express.Router();
 
@@ -10,15 +10,16 @@ router.get("/users/me", auth, async (req, res) => {
 });
 
 router.post("/users", async (req, res) => {
+  // TODO: Validate what properties can be in a req.body.
   const user = new User(req.body);
 
   try {
     await user.save();
     const token = await user.generateAuthToken();
 
-    res.status(201).send({ user, token });
+    res.status(201).send({ success: true, user: user, token: token });
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).send({ success: false, error: error.message });
   }
 });
 
@@ -34,12 +35,14 @@ router.post("/users/login", async (req, res) => {
 
     const token = await user.generateAuthToken();
 
-    res.send({
-      user,
-      token,
+    res.status(200).send({
+      success: true,
+      user: user,
+      token: token,
     });
   } catch (error) {
-    res.status(400).send(error);
+    console.log(error);
+    res.status(400).send({ success: false, error: error.message });
   }
 });
 
@@ -51,9 +54,9 @@ router.post("/users/logout", auth, async (req, res) => {
 
     await req.user.save();
 
-    res.send();
+    res.status(200).send({ success: true });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send({ success: false, error: error.message });
   }
 });
 
@@ -62,23 +65,23 @@ router.post("/users/logoutAll", auth, async (req, res) => {
     // Removes all tokens that are saved for user.
     req.user.tokens = [];
     await req.user.save();
-    res.status(200).send();
+    res.status(200).send({ success: true });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send({ success: false, error: error.message });
   }
 });
 
 router.patch("/users/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
 
-  const allowedUpdates = ["name", "email", "password", "age"];
+  const allowedUpdates = ["username", "email", "password", "isNotified"];
 
   const isValidOperation = updates.every((update) => {
     return allowedUpdates.includes(update);
   });
 
   if (!isValidOperation) {
-    return res.status(400).send({ error: "Invalid updates." });
+    return res.status(400).send({ success: false, error: "Invalid updates." });
   }
 
   try {
@@ -90,18 +93,18 @@ router.patch("/users/me", auth, async (req, res) => {
 
     await user.save();
 
-    res.send(user);
+    res.statis(200).send({ success: true, user: user });
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).send({ success: false, error: error.message });
   }
 });
 
 router.delete("/users/me", auth, async (req, res) => {
   try {
     await req.user.remove();
-    res.send(req.user);
+    res.status(200).send({ success: true, user: req.user });
   } catch (error) {
-    res.status(500).send();
+    res.status(500).send({ success: false, error: error.message });
   }
 });
 

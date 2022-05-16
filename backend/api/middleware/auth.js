@@ -4,7 +4,6 @@ const User = require("../models/user");
 const auth = async (req, res, next) => {
   try {
     const token = req.headers.auth_token;
-
     const verification = jwt.verify(
       token,
       "thisIsASecretMessage"

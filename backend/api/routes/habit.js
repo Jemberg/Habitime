@@ -8,10 +8,10 @@ const router = new express.Router();
 router.get("/habits", auth, async (request, response) => {
   try {
     const habits = await Habit.find({ createdBy: request.user._id });
-    response.send(habits);
+    response.status(200).send({ success: true, habits: habits });
   } catch (error) {
     console.log(error);
-    response.status(500).send(error);
+    response.status(500).send({ success: false, error: error.message });
   }
 });
 
@@ -24,12 +24,14 @@ router.get("/habits/:id", auth, async (request, response) => {
 
     if (!habit) {
       // TODO: Add json responses where possible in code.
-      return response.status(404).json({ error: "Habit has not been found." });
+      return response
+        .status(404)
+        .send({ success: false, error: "Habit not found." });
     }
 
-    response.status(200).send(habit);
+    response.status(200).send({ success: true, habit: habit });
   } catch (error) {
-    response.status(500).send(error);
+    response.status(500).send({ success: false, error: error.message });
   }
 });
 
@@ -41,9 +43,9 @@ router.post("/habits", auth, async (request, response) => {
 
   try {
     await habit.save();
-    response.status(201).send(habit);
+    response.status(201).send({ success: true, habit: habit });
   } catch (error) {
-    response.status(400).send(error);
+    response.status(400).send({ success: false, error: error.message });
   }
 });
 
@@ -76,7 +78,9 @@ router.patch("/habits/:id", auth, async (request, response) => {
     });
 
     if (!habit) {
-      return response.status(404).send();
+      return response
+        .status(404)
+        .send({ success: false, error: "Habit not found." });
     }
 
     requestedUpdates.forEach((update) => {
@@ -85,9 +89,9 @@ router.patch("/habits/:id", auth, async (request, response) => {
 
     await habit.save();
 
-    response.send(habit);
+    response.status(200).send({ success: true, habit: habit });
   } catch (error) {
-    response.status(400).send(error);
+    response.status(400).send({ success: false, error: error.message });
   }
 });
 
@@ -99,11 +103,13 @@ router.delete("/habits/:id", auth, async (request, response) => {
     });
 
     if (!habit) {
-      return response.status(404).send();
+      return response
+        .status(404)
+        .send({ success: false, error: "Habit was not found." });
     }
 
-    response.send(habit);
+    response.status(200).send({ success: true, habit: habit });
   } catch (error) {
-    response.status(500).send(error);
+    response.status(500).send({ success: false, error: error.message });
   }
 });
