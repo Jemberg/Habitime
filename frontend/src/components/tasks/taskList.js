@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { checkAuthentication } from "../../auth/auth";
 import Layout from "../layout";
 import Task from "./task";
+import EditTaskModal from "./editTaskModal";
 
 const TaskList = () => {
   var myHeaders = new Headers();
@@ -40,13 +41,14 @@ const TaskList = () => {
   const [taskList, setTaskList] = useState([]);
 
   const addTask = async (item) => {
-    // TODO: Check if task properties are empty.
+    console.log(`Adding task with the ID of ${checkAuthentication()._id}`);
 
     var raw = JSON.stringify({
       user: checkAuthentication()._id,
       name: item.name,
-      description: item.description,
     });
+
+    console.log(`addTask payload contents are: ${raw}`);
 
     var requestOptions = {
       method: "POST",
@@ -56,7 +58,10 @@ const TaskList = () => {
     };
 
     fetch("http://localhost:3000/tasks", requestOptions)
-      .then((response) => response.text())
+      .then((response) => {
+        console.log(response.text());
+      })
+
       .then((result) => {
         const parsed = JSON.parse(result);
 
@@ -64,6 +69,7 @@ const TaskList = () => {
           throw new Error(`There was an error: ${parsed.error}`);
         }
 
+        toast.success("Task has been created!");
         setTaskList((oldList) => [...oldList, parsed.task]);
       })
       .catch((error) => {
@@ -73,6 +79,32 @@ const TaskList = () => {
   };
 
   const removeTask = async (id) => {
+    console.log(`Deleting item with the ID of ${id}`);
+
+    var requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`http://localhost:3000/tasks/${id}`, requestOptions)
+      .then((response) => response.text())
+
+      .then((result) => {
+        const parsed = JSON.parse(result);
+
+        if (!parsed.success) {
+          throw new Error(`There was an error: ${parsed.error}`);
+        }
+
+        console.log(`Task deleted with name of: ${parsed.task.name}`);
+        toast.success("Task has been deleted!");
+        setTaskList((oldList) => oldList.filter((item) => item._id !== id));
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+
     // await api
     //   .delete(`/tasks/${id}`, {
     //     _id: id,
@@ -105,8 +137,14 @@ const TaskList = () => {
 
   const renderList = taskList.map((task) => (
     <Fragment>
-      <Task key={task._id} item={task}></Task>
-      {/* TODO: Add modal. */}
+      <div style={{ border: " 1px solid purple" }}>
+        <Task key={task._id} item={task}></Task>
+        <EditTaskModal
+          removeTask={() => removeTask(task._id)}
+          editTask={(updatedItem) => editTask(task._id, updatedItem)}
+          itemProps={task}
+        ></EditTaskModal>
+      </div>
     </Fragment>
   ));
 
@@ -121,7 +159,12 @@ const TaskList = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Test.");
+
+    if (!item.name || item.name.length === 0) {
+      toast.error("Please enter a name for your task!");
+      return;
+    }
+
     addTask(item);
   };
 
@@ -129,13 +172,25 @@ const TaskList = () => {
     <Fragment>
       <ToastContainer />
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={item.name}
-          name="name"
-          onChange={handleChange}
-        />
-        <button type="submit">Click me!</button>
+        <div class="ui grid container equal width">
+          <div class="four column row">
+            <div class="left floated three wide column">
+              <div className="ui input">
+                <input
+                  type="text"
+                  value={item.name}
+                  name="name"
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div class="right floated one wide column">
+              <button className="ui button" type="submit">
+                Add Task
+              </button>
+            </div>
+          </div>
+        </div>
       </form>
       <div>{renderList}</div>
     </Fragment>

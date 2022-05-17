@@ -22,6 +22,7 @@ const taskSchema = new mongoose.Schema({
     default: false,
   },
   completionDate: {
+    /* Add completion date when editing task and completed is set as true. */
     type: Date,
   },
   name: {

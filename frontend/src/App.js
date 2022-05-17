@@ -10,10 +10,20 @@ const App = () => {
     <Layout>
       <Fragment>
         {!checkAuthentication() ? <Navigate to="/login" /> : null};
-        <div className="ui one column stackable center aligned page grid">
-          <div className="column twelve wide">
-            <h1>Good afternoon, {checkAuthentication().username}</h1>
-            <TaskList></TaskList>
+        <div className="center aligned ui container">
+          <h1>Good afternoon, {checkAuthentication().username}</h1>
+        </div>
+        <div className="ui grid container stackable equal width">
+          <div className="row">
+            <div className="column">
+              <TaskList></TaskList>
+            </div>
+            <div className="column">
+              <TaskList></TaskList>
+            </div>
+            <div className="column">
+              <TaskList></TaskList>
+            </div>
           </div>
         </div>
       </Fragment>
