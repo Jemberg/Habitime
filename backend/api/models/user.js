@@ -37,16 +37,16 @@ const userSchema = new mongoose.Schema({
   },
   createdIn: {
     type: Date,
-    default: Date.now(),
+    default: new Date(),
   },
   updatedIn: {
     type: Date,
-    default: Date.now(),
+    default: new Date(),
   },
   lastLogin: {
     type: Date,
     // When account is created, first token is issued, so this is the first login.
-    default: Date.now(),
+    default: new Date(),
   },
   // TODO: Reset these at the start of the week and show them in a push notification.
   doneTasks: {

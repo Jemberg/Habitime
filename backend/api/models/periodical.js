@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const taskSchema = new mongoose.Schema({
+const periodicalSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -54,6 +54,6 @@ function getNextDay() {
   return tomorrow;
 }
 
-const Task = mongoose.model("task", taskSchema);
+const Periodical = mongoose.model("periodical", periodicalSchema);
 
-module.exports = Task;
+module.exports = Periodical;

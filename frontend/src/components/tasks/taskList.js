@@ -104,49 +104,51 @@ const TaskList = () => {
       .catch((error) => {
         console.log("error", error);
       });
-
-    // await api
-    //   .delete(`/tasks/${id}`, {
-    //     _id: id,
-    //   })
-    //   .then((response) => {
-    //     setTaskList((oldList) => oldList.filter((item) => item._id !== id));
-    //     console.log(response.data);
-    //     console.log(taskList);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   };
 
   const editTask = async (id, item) => {
-    // await api
-    //   .patch(`/tasks/${id}`, {
-    //     /* TODO: Add more items that are editable. */
-    //     description: item.description,
-    //     completed: item.completed,
-    //   })
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     console.log(taskList);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-  };
+    console.log(`Editing item with the ID of ${id}`);
+    console.log(item);
 
-  const renderList = taskList.map((task) => (
-    <Fragment>
-      <div style={{ border: " 1px solid purple" }}>
-        <Task key={task._id} item={task}></Task>
-        <EditTaskModal
-          removeTask={() => removeTask(task._id)}
-          editTask={(updatedItem) => editTask(task._id, updatedItem)}
-          itemProps={task}
-        ></EditTaskModal>
-      </div>
-    </Fragment>
-  ));
+    var raw = JSON.stringify({
+      name: item.name,
+      description: item.description,
+      category: item.category,
+      priority: item.priority,
+      dueDate: item.dueDate /* .toUTCString() */,
+    });
+
+    console.log(raw);
+
+    var requestOptions = {
+      method: "PATCH",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(`http://localhost:3000/tasks/${id}`, requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result);
+        const parsed = JSON.parse(result);
+
+        if (!parsed.success) {
+          throw new Error(`There was an error: ${parsed.error}`);
+        }
+
+        console.log(`Task edited with name of: ${parsed.task.name}`);
+        toast.success("Task has been deleted!");
+
+        // Delete task, then add updated task back in, this is not very efficient lol.
+        setTaskList((oldList) => oldList.filter((item) => item._id !== id));
+        setTaskList((oldList) => [...oldList, parsed.task]);
+      })
+      .catch((error) => {
+        console.log("error", error);
+        toast.error(error.message);
+      });
+  };
 
   const [item, setItem] = useState({
     name: "",
@@ -168,14 +170,40 @@ const TaskList = () => {
     addTask(item);
   };
 
+  const renderList = taskList.map((task) => (
+    <Fragment>
+      <div style={{ margin: "0px" }} class="ui segment">
+        <div className="ui grid container stackable equal width">
+          <div className="row">
+            <div className="column left aligned">
+              <Task key={task._id} item={task}></Task>
+              <EditTaskModal
+                removeTask={() => removeTask(task._id)}
+                editTask={(updatedItem) => editTask(task._id, updatedItem)}
+                itemProps={task}
+              ></EditTaskModal>
+            </div>
+
+            <div className="column right aligned three wide">
+              <div style={{ transform: "scale(2)" }} class="ui fitted checkbox">
+                <input type="checkbox" />
+                <label></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Fragment>
+  ));
+
   return (
     <Fragment>
       <ToastContainer />
       <form onSubmit={handleSubmit}>
         <div class="ui grid container equal width">
-          <div class="four column row">
-            <div class="left floated three wide column">
-              <div className="ui input">
+          <div class="column row">
+            <div class="left aligned column">
+              <div className="fluid ui input">
                 <input
                   type="text"
                   value={item.name}
@@ -184,15 +212,17 @@ const TaskList = () => {
                 />
               </div>
             </div>
-            <div class="right floated one wide column">
-              <button className="ui button" type="submit">
+            <div class="right aligned column">
+              <button className="fluid ui button" type="submit">
                 Add Task
               </button>
             </div>
           </div>
         </div>
       </form>
-      <div>{renderList}</div>
+      <div class="ui raised segments">
+        <div>{renderList}</div>
+      </div>
     </Fragment>
   );
 };

@@ -117,3 +117,5 @@ router.delete("/periodical/:id", auth, async (request, response) => {
     response.status(500).send({ success: false, error: error.message });
   }
 });
+
+module.exports = router;

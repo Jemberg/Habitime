@@ -4,9 +4,16 @@ import { authenticate, logOut } from "../auth/auth";
 
 const Layout = ({ children }) => {
   const navBar = () => (
-    <div style={{ backgroundColor: "purple" }} className="ui secondary menu">
+    <div style={{ backgroundColor: "#4e0a7b" }} className="ui large menu">
       <Link to="/" style={{ color: "white" }} className="white text item">
         Home
+      </Link>
+      <Link
+        to="/settings"
+        style={{ color: "white" }}
+        className="white text item"
+      >
+        Settings
       </Link>
 
       <div className="right menu">

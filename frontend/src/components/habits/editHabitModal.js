@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 
 Modal.setAppElement("#root");
 
-const EditTaskModal = (props) => {
+const EditHabitModal = (props) => {
   const [modalIsOpen, setIsOpen] = React.useState(false);
 
   function openModal() {
@@ -19,11 +19,11 @@ const EditTaskModal = (props) => {
     setIsOpen(false);
   }
 
-  const [task, setTask] = useState({});
+  const [habit, setTask] = useState({});
 
   const handleChange = (event) => {
     console.log(event.target.name, " ", event.target.value);
-    setTask({ ...task, [event.target.name]: event.target.value });
+    setTask({ ...habit, [event.target.name]: event.target.value });
   };
 
   return (
@@ -35,7 +35,7 @@ const EditTaskModal = (props) => {
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
-        contentLabel="Task editing."
+        contentLabel="Habit editing."
       >
         <h1 className="ui header">{props.itemProps.name}</h1>
         <ToastContainer />
@@ -89,7 +89,7 @@ const EditTaskModal = (props) => {
           <button
             className="ui button green"
             onClick={() => {
-              props.editTask(task);
+              props.editTask(habit);
               closeModal();
             }}
           >
@@ -113,4 +113,4 @@ const EditTaskModal = (props) => {
   );
 };
 
-export default EditTaskModal;
+export default EditHabitModal;
