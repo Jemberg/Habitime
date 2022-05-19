@@ -44,7 +44,7 @@ const TaskList = () => {
     console.log(`Adding task with the ID of ${checkAuthentication()._id}`);
 
     var raw = JSON.stringify({
-      user: checkAuthentication()._id,
+      // user: checkAuthentication()._id,
       name: item.name,
     });
 
@@ -57,9 +57,9 @@ const TaskList = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/tasks", requestOptions)
+    await fetch("http://localhost:3000/tasks", requestOptions)
       .then((response) => {
-        console.log(response.text());
+        console.log(response.json());
       })
 
       .then((result) => {

@@ -2,6 +2,7 @@ const express = require("express");
 
 const Task = require("../models/task");
 const User = require("../models/user");
+
 const auth = require("../middleware/auth");
 
 const router = new express.Router();
@@ -35,23 +36,43 @@ router.get("/tasks/:id", auth, async (req, res) => {
   }
 });
 
-router.post("/tasks", auth, async (req, res) => {
-  const user = await User.findOne({ _id: req.body.user });
+// router.post("/tasks", auth, async (request, response) => {
+//   const user = await User.findOne({ _id: request.body.user });
 
-  if (!user) {
-    throw new Error("User not found");
-  }
+//   if (!user) {
+//     throw new Error("User not found");
+//   }
 
+//   // const category = new Category({
+//   //   ...request.body,
+//   //   createdBy: request.user._id,
+//   // });
+
+//   const task = new Task({
+//     ...request.body,
+//     createdBy: request.body.user._id,
+//   });
+
+//   try {
+//     await task.save();
+//     console.log(task);
+//     response.status(201).send({ success: true, task: task });
+//   } catch (error) {
+//     response.status(400).send({ success: false, error: error.message });
+//   }
+// });
+
+router.post("/tasks", auth, async (request, response) => {
   const task = new Task({
-    name: req.body.name,
-    createdBy: user._id,
+    ...request.body,
+    createdBy: request.user._id,
   });
 
   try {
     await task.save();
-    res.status(201).send({ success: true, task: task });
+    response.status(201).send({ success: true, task: task });
   } catch (error) {
-    res.status(400).send({ success: false, error: error.message });
+    response.status(400).send({ success: false, error: error.message });
   }
 });
 
