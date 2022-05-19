@@ -38,6 +38,26 @@ const TaskList = () => {
       });
   }, []);
 
+  const [item, setItem] = useState({
+    name: "",
+    description: "",
+  });
+
+  const handleChange = (event) => {
+    setItem({ ...item, [event.target.name]: event.target.value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!item.name || item.name.length === 0) {
+      toast.error("Please enter a name for your task!");
+      return;
+    }
+
+    addTask(item);
+  };
+
   const [taskList, setTaskList] = useState([]);
 
   const addTask = async (item) => {
@@ -57,12 +77,11 @@ const TaskList = () => {
       redirect: "follow",
     };
 
-    await fetch("http://localhost:3000/tasks", requestOptions)
-      .then((response) => {
-        console.log(response.json());
-      })
+    fetch("http://localhost:3000/tasks", requestOptions)
+      .then((response) => response.text())
 
       .then((result) => {
+        console.log(result.task);
         const parsed = JSON.parse(result);
 
         if (!parsed.success) {
@@ -148,26 +167,6 @@ const TaskList = () => {
         console.log("error", error);
         toast.error(error.message);
       });
-  };
-
-  const [item, setItem] = useState({
-    name: "",
-    description: "",
-  });
-
-  const handleChange = (event) => {
-    setItem({ ...item, [event.target.name]: event.target.value });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (!item.name || item.name.length === 0) {
-      toast.error("Please enter a name for your task!");
-      return;
-    }
-
-    addTask(item);
   };
 
   const renderList = taskList.map((task) => (
