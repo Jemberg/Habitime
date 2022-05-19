@@ -8,7 +8,25 @@ import Cookies from "js-cookie";
 
 const Settings = () => {
   const [categoryList, setCategoryList] = useState({});
+  const [newCategory, setNewCategory] = useState({});
+  // TODO: Add color selector and saving for category.
   const [user, setUser] = useState({});
+
+  const handleChange = (event) => {
+    console.log(event.target.name, " ", event.target.value);
+    setUser({ ...user, [event.target.name]: event.target.value });
+  };
+
+  const handleCategoryChange = (event) => {
+    console.log(event.target.name, " ", event.target.value);
+    setNewCategory({ ...newCategory, [event.target.name]: event.target.value });
+  };
+
+  const handleCategorySubmit = (event) => {
+    event.preventDefault();
+
+    addCategory(newCategory);
+  };
 
   var myHeaders = new Headers();
   myHeaders.append("auth_token", Cookies.get("token"));
@@ -39,17 +57,78 @@ const Settings = () => {
       });
   }, []);
 
-  const handleChange = (event) => {
-    console.log(event.target.name, " ", event.target.value);
-    setUser({ ...user, [event.target.name]: event.target.value });
+  const addCategory = async (category) => {
+    var raw = JSON.stringify({
+      name: newCategory.name,
+      color: newCategory.color,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:3000/categories", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const parsed = JSON.parse(result);
+        console.log(parsed);
+
+        if (!parsed.success) {
+          throw new Error(`There was an error: ${parsed.error}`);
+        }
+
+        toast.success("Task has been created!");
+        setCategoryList((oldList) => [...oldList, parsed.category]);
+      })
+      .catch((error) => {
+        console.log("error", error);
+        toast.error(error.message);
+      });
   };
 
-  const renderList = categoryList.map((category) => (
+  const removeCategory = async (id) => {
+    var requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`http://localhost:3000/categories/${id}`, requestOptions)
+      .then((response) => response.text())
+
+      .then((result) => {
+        const parsed = JSON.parse(result);
+
+        if (!parsed.success) {
+          throw new Error(`There was an error: ${parsed.error}`);
+        }
+
+        console.log(`Category deleted with name of: ${parsed.category.name}`);
+        toast.success("Category has been deleted!");
+        setCategoryList((oldList) => oldList.filter((item) => item._id !== id));
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
+
+  const renderList = Array.from(categoryList).map((category) => (
     <Fragment>
       <div class="ui middle aligned divided list">
         <div class="item">
           <div class="right floated content">
-            <div class="ui button red">Delete</div>
+            <div
+              value={category._id}
+              onClick={() => {
+                removeCategory(category._id);
+              }}
+              class="ui button red"
+            >
+              Delete
+            </div>
           </div>
           {/* TODO: Add editing option as well. */}
           <div class="content">{category.name}</div>
@@ -138,12 +217,20 @@ const Settings = () => {
               <h2 class="ui header">Category Options</h2>
               <form className="ui form" action="">
                 <label>Add New Category</label>
-                <input
-                  onChange={handleChange}
-                  type="password"
-                  name="name"
-                  placeholder={user.name}
-                />
+                <div className="field">
+                  <input
+                    onChange={handleCategoryChange}
+                    type="text"
+                    name="name"
+                    placeholder="University"
+                  />
+                </div>
+                <button
+                  className="ui button green"
+                  onClick={handleCategorySubmit}
+                >
+                  Add New Category
+                </button>
               </form>
               <h2 class="ui header">Currently Available Categories:</h2>
               {renderList}
