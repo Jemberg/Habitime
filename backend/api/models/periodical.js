@@ -12,7 +12,7 @@ const periodicalSchema = new mongoose.Schema({
   },
   creationDate: {
     type: Date,
-    default: Date.now(),
+    default: new Date(),
   },
   completed: {
     type: Boolean,
@@ -25,7 +25,6 @@ const periodicalSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
     trim: true,
   },
   priority: {

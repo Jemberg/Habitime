@@ -1,3 +1,4 @@
+import axios from "axios";
 import Cookies from "js-cookie";
 import React, { useEffect, useState, Fragment, Section, Form } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -28,8 +29,8 @@ const HabitList = () => {
           throw new Error(`There was an error: ${parsed.error}`);
         }
 
-        console.log(parsed.tasks);
-        setTaskList(parsed.tasks);
+        console.log(parsed.habits);
+        setHabitList(parsed.habits);
       })
       .catch((error) => {
         console.log("error", error);
@@ -37,17 +38,37 @@ const HabitList = () => {
       });
   }, []);
 
-  const [taskList, setTaskList] = useState([]);
+  const [item, setItem] = useState({
+    name: "",
+    description: "",
+  });
 
-  const addTask = async (item) => {
+  const handleChange = (event) => {
+    setItem({ ...item, [event.target.name]: event.target.value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!item.name || item.name.length === 0) {
+      toast.error("Please enter a name for your habit!");
+      return;
+    }
+
+    addHabit(item);
+  };
+
+  const [habitList, setHabitList] = useState([]);
+
+  const addHabit = async (item) => {
     console.log(`Adding habit with the ID of ${checkAuthentication()._id}`);
 
     var raw = JSON.stringify({
-      user: checkAuthentication()._id,
+      // user: checkAuthentication()._id,
       name: item.name,
     });
 
-    console.log(`addTask payload contents are: ${raw}`);
+    console.log(`addHabit payload contents are: ${raw}`);
 
     var requestOptions = {
       method: "POST",
@@ -57,19 +78,18 @@ const HabitList = () => {
     };
 
     fetch("http://localhost:3000/habits", requestOptions)
-      .then((response) => {
-        console.log(response.text());
-      })
+      .then((response) => response.text())
 
       .then((result) => {
         const parsed = JSON.parse(result);
+        console.log(parsed);
 
         if (!parsed.success) {
           throw new Error(`There was an error: ${parsed.error}`);
         }
 
         toast.success("Habit has been created!");
-        setTaskList((oldList) => [...oldList, parsed.habit]);
+        setHabitList((oldList) => [...oldList, parsed.habit]);
       })
       .catch((error) => {
         console.log("error", error);
@@ -77,8 +97,8 @@ const HabitList = () => {
       });
   };
 
-  const removeTask = async (id) => {
-    console.log(`Deleting item with the ID of ${id}`);
+  const removeHabit = async (id) => {
+    console.log(`Deleting habit with the ID of ${id}`);
 
     var requestOptions = {
       method: "DELETE",
@@ -98,15 +118,15 @@ const HabitList = () => {
 
         console.log(`Habit deleted with name of: ${parsed.habit.name}`);
         toast.success("Habit has been deleted!");
-        setTaskList((oldList) => oldList.filter((item) => item._id !== id));
+        setHabitList((oldList) => oldList.filter((item) => item._id !== id));
       })
       .catch((error) => {
         console.log("error", error);
       });
   };
 
-  const editTask = async (id, item) => {
-    console.log(`Editing item with the ID of ${id}`);
+  const editHabit = async (id, item) => {
+    console.log(`Editing habit with the ID of ${id}`);
     console.log(item);
 
     var raw = JSON.stringify({
@@ -137,11 +157,10 @@ const HabitList = () => {
         }
 
         console.log(`Habit edited with name of: ${parsed.habit.name}`);
-        toast.success("Habit has been deleted!");
+        toast.success("Habit has been edited!");
 
-        // Delete habit, then add updated habit back in, this is not very efficient lol.
-        setTaskList((oldList) => oldList.filter((item) => item._id !== id));
-        setTaskList((oldList) => [...oldList, parsed.habit]);
+        setHabitList((oldList) => oldList.filter((item) => item._id !== id));
+        setHabitList((oldList) => [...oldList, parsed.habit]);
       })
       .catch((error) => {
         console.log("error", error);
@@ -149,27 +168,7 @@ const HabitList = () => {
       });
   };
 
-  const [item, setItem] = useState({
-    name: "",
-    description: "",
-  });
-
-  const handleChange = (event) => {
-    setItem({ ...item, [event.target.name]: event.target.value });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (!item.name || item.name.length === 0) {
-      toast.error("Please enter a name for your habit!");
-      return;
-    }
-
-    addTask(item);
-  };
-
-  const renderList = taskList.map((habit) => (
+  const renderList = habitList.map((habit) => (
     <Fragment>
       <div style={{ margin: "0px" }} class="ui segment">
         <div className="ui grid container stackable equal width">
@@ -177,8 +176,8 @@ const HabitList = () => {
             <div className="column left aligned">
               <Habit key={habit._id} item={habit}></Habit>
               <EditHabitModal
-                removeTask={() => removeTask(habit._id)}
-                editTask={(updatedItem) => editTask(habit._id, updatedItem)}
+                removeHabit={() => removeHabit(habit._id)}
+                editHabit={(updatedItem) => editHabit(habit._id, updatedItem)}
                 itemProps={habit}
               ></EditHabitModal>
             </div>

@@ -7,8 +7,8 @@ const router = new express.Router();
 
 router.get("/periodical", auth, async (request, response) => {
   try {
-    const habits = await Periodical.find({ createdBy: request.user._id });
-    response.status(200).send({ success: true, habits: habits });
+    const periodicals = await Periodical.find({ createdBy: request.user._id });
+    response.status(200).send({ success: true, periodicals: periodicals });
   } catch (error) {
     console.log(error);
     response.status(500).send({ success: false, error: error.message });
