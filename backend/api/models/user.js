@@ -4,6 +4,8 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
 const Task = require("./task");
+const Habit = require("./habit");
+const Periodical = require("./periodical");
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -79,6 +81,18 @@ const userSchema = new mongoose.Schema({
 
 userSchema.virtual("tasks", {
   ref: "task",
+  localField: "_id",
+  foreignField: "createdBy",
+});
+
+userSchema.virtual("habits", {
+  ref: "habit",
+  localField: "_id",
+  foreignField: "createdBy",
+});
+
+userSchema.virtual("periodical", {
+  ref: "periodical",
   localField: "_id",
   foreignField: "createdBy",
 });

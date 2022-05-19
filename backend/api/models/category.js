@@ -22,6 +22,17 @@ const categorySchema = new mongoose.Schema({
   },
 });
 
+// Delete user tasks when user is removed.
+categorySchema.pre("remove", async function (next) {
+  const category = this;
+
+  // Removes deleted category from all tasks that have it.
+  // TODO: Add habits and periodical tasks as well.
+  await Task.updateMany({ category: category.name }, { category: undefined });
+
+  next();
+});
+
 const Category = mongoose.model("category", categorySchema);
 
 module.exports = Category;

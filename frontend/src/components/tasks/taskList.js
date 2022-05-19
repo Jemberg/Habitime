@@ -81,8 +81,8 @@ const TaskList = () => {
       .then((response) => response.text())
 
       .then((result) => {
-        console.log(result.task);
         const parsed = JSON.parse(result);
+        console.log(parsed);
 
         if (!parsed.success) {
           throw new Error(`There was an error: ${parsed.error}`);
@@ -157,7 +157,7 @@ const TaskList = () => {
         }
 
         console.log(`Task edited with name of: ${parsed.task.name}`);
-        toast.success("Task has been deleted!");
+        toast.success("Task has been edited!");
 
         // Delete task, then add updated task back in, this is not very efficient lol.
         setTaskList((oldList) => oldList.filter((item) => item._id !== id));
