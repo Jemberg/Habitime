@@ -58,6 +58,14 @@ const TaskList = () => {
     addTask(item);
   };
 
+  const onCompleteSubmit = (id, completed) => {
+    console.log(id, completed);
+    // document.getElementById(id).checked = !completed;
+    const toastCompleted = completed ? "Completed" : "Uncompleted";
+    toast.success(`Task has been ${toastCompleted}!`);
+    editTask(id, { completed: completed });
+  };
+
   const [taskList, setTaskList] = useState([]);
 
   const addTask = async (item) => {
@@ -128,10 +136,12 @@ const TaskList = () => {
   const editTask = async (id, item) => {
     console.log(`Editing item with the ID of ${id}`);
     console.log(item);
+    // TODO: Put item back in corresponding index spot it was in before.
 
     var raw = JSON.stringify({
       name: item.name,
       description: item.description,
+      completed: item.completed,
       category: item.category,
       priority: item.priority,
       dueDate: item.dueDate /* .toUTCString() */,
@@ -157,7 +167,6 @@ const TaskList = () => {
         }
 
         console.log(`Task edited with name of: ${parsed.task.name}`);
-        toast.success("Task has been edited!");
 
         // Delete task, then add updated task back in, this is not very efficient lol.
         setTaskList((oldList) => oldList.filter((item) => item._id !== id));
@@ -185,7 +194,15 @@ const TaskList = () => {
 
             <div className="column right aligned three wide">
               <div style={{ transform: "scale(2)" }} class="ui fitted checkbox">
-                <input type="checkbox" />
+                <input
+                  id={task._id}
+                  checked={task.completed}
+                  onChange={() => {}}
+                  onClick={() => {
+                    onCompleteSubmit(task._id, !task.completed);
+                  }}
+                  type="checkbox"
+                />
                 <label></label>
               </div>
             </div>

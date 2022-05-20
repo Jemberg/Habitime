@@ -62,8 +62,10 @@ const EditHabitModal = (props) => {
             <label>Priority</label>
             <input
               onChange={handleChange}
-              type="text"
+              type="number"
               name="priority"
+              min="1"
+              max="3"
               placeholder={props.itemProps.priority}
             />
           </div>

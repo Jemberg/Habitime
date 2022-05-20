@@ -133,6 +133,7 @@ const HabitList = () => {
       name: item.name,
       description: item.description,
       category: item.category,
+      counter: item.counter,
       priority: item.priority,
       dueDate: item.dueDate /* .toUTCString() */,
     });
@@ -168,6 +169,14 @@ const HabitList = () => {
       });
   };
 
+  const onPositiveHabit = (habit) => {
+    editHabit(habit._id, { counter: habit.counter + 1 });
+  };
+
+  const onNegativeHabit = (habit) => {
+    editHabit(habit._id, { counter: habit.counter - 1 });
+  };
+
   const renderList = habitList.map((habit) => (
     <Fragment>
       <div style={{ margin: "0px" }} class="ui segment">
@@ -183,8 +192,23 @@ const HabitList = () => {
             </div>
 
             <div className="column right aligned three wide">
-              <div style={{ transform: "scale(2)" }} class="ui fitted checkbox">
-                <input type="checkbox" />
+              <div style={{ transform: "" }} class="ui fitted">
+                <button
+                  onClick={() => {
+                    onPositiveHabit(habit);
+                  }}
+                  className="ui button"
+                >
+                  <i style={{ margin: "0px" }} class="plus circle icon"></i>
+                </button>
+                <button
+                  onClick={() => {
+                    onNegativeHabit(habit);
+                  }}
+                  className="ui button"
+                >
+                  <i style={{ margin: "0px" }} class="minus circle icon"></i>
+                </button>
                 <label></label>
               </div>
             </div>

@@ -62,8 +62,10 @@ const EditTaskModal = (props) => {
             <label>Priority</label>
             <input
               onChange={handleChange}
-              type="text"
+              type="number"
               name="priority"
+              min="1"
+              max="3"
               placeholder={props.itemProps.priority}
             />
           </div>
@@ -90,6 +92,7 @@ const EditTaskModal = (props) => {
             className="ui button green"
             onClick={() => {
               props.editTask(task);
+              toast.success("Task has been edited!");
               closeModal();
             }}
           >

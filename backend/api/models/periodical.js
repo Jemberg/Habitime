@@ -41,10 +41,6 @@ const periodicalSchema = new mongoose.Schema({
     type: Date,
     default: getNextDay(),
   },
-  goal: {
-    type: Number,
-    default: 1,
-  },
 });
 
 function getNextDay() {

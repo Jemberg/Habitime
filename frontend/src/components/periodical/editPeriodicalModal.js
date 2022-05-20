@@ -62,8 +62,10 @@ const EditPeriodicalModal = (props) => {
             <label>Priority</label>
             <input
               onChange={handleChange}
-              type="text"
+              type="number"
               name="priority"
+              min="1"
+              max="3"
               placeholder={props.itemProps.priority}
             />
           </div>
@@ -90,6 +92,7 @@ const EditPeriodicalModal = (props) => {
             className="ui button green"
             onClick={() => {
               props.editTask(periodical);
+              toast.success("Periodical has been edited!");
               closeModal();
             }}
           >

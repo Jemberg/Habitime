@@ -58,6 +58,14 @@ const PeriodicalList = () => {
     addPeriodical(item);
   };
 
+  const onCompleteSubmit = (id, completed) => {
+    console.log(id, completed);
+    // document.getElementById(id).checked = !completed;
+    const toastCompleted = completed ? "Completed" : "Uncompleted";
+    toast.success(`Periodical has been ${toastCompleted}!`);
+    editPeriodical(id, { completed: completed });
+  };
+
   const [periodicalList, setPeriodicalList] = useState([]);
 
   const addPeriodical = async (item) => {
@@ -138,6 +146,7 @@ const PeriodicalList = () => {
     var raw = JSON.stringify({
       name: item.name,
       description: item.description,
+      completed: item.completed,
       category: item.category,
       priority: item.priority,
       dueDate: item.dueDate /* .toUTCString() */,
@@ -165,7 +174,6 @@ const PeriodicalList = () => {
         console.log(
           `Periodical edited with name of: ${parsed.periodical.name}`
         );
-        toast.success("Periodical has been edited!");
 
         // Delete periodical, then add updated periodical back in, this is not very efficient lol.
         setPeriodicalList((oldList) =>
@@ -197,7 +205,15 @@ const PeriodicalList = () => {
 
             <div className="column right aligned three wide">
               <div style={{ transform: "scale(2)" }} class="ui fitted checkbox">
-                <input type="checkbox" />
+                <input
+                  id={periodical._id}
+                  checked={periodical.completed}
+                  onChange={() => {}}
+                  onClick={() => {
+                    onCompleteSubmit(periodical._id, !periodical.completed);
+                  }}
+                  type="checkbox"
+                />
                 <label></label>
               </div>
             </div>
