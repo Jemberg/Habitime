@@ -188,8 +188,8 @@ const PeriodicalList = () => {
   };
 
   const renderList = Array.from(periodicalList).map((periodical) => (
-    <Fragment>
-      <div style={{ margin: "0px" }} class="ui segment">
+    <Fragment key={periodical._id}>
+      <div style={{ margin: "0px" }} className="ui segment">
         <div className="ui grid container stackable equal width">
           <div className="row">
             <div className="column left aligned">
@@ -204,7 +204,10 @@ const PeriodicalList = () => {
             </div>
 
             <div className="column right aligned three wide">
-              <div style={{ transform: "scale(2)" }} class="ui fitted checkbox">
+              <div
+                style={{ transform: "scale(2)" }}
+                className="ui fitted checkbox"
+              >
                 <input
                   id={periodical._id}
                   checked={periodical.completed}
@@ -227,9 +230,9 @@ const PeriodicalList = () => {
     <Fragment>
       <ToastContainer />
       <form onSubmit={handleSubmit}>
-        <div class="ui grid container equal width">
-          <div class="column row">
-            <div class="left aligned column">
+        <div className="ui grid container equal width">
+          <div className="column row">
+            <div className="left aligned column">
               <div className="fluid ui input">
                 <input
                   type="text"
@@ -239,7 +242,7 @@ const PeriodicalList = () => {
                 />
               </div>
             </div>
-            <div class="right aligned column">
+            <div className="right aligned column">
               <button className="fluid ui button" type="submit">
                 Add Periodical
               </button>
@@ -247,7 +250,7 @@ const PeriodicalList = () => {
           </div>
         </div>
       </form>
-      <div class="ui raised segments">
+      <div className="ui raised segments">
         <div>{renderList}</div>
       </div>
     </Fragment>

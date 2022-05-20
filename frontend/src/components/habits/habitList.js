@@ -178,8 +178,8 @@ const HabitList = () => {
   };
 
   const renderList = habitList.map((habit) => (
-    <Fragment>
-      <div style={{ margin: "0px" }} class="ui segment">
+    <Fragment key={habit._id}>
+      <div style={{ margin: "0px" }} className="ui segment">
         <div className="ui grid container stackable equal width">
           <div className="row">
             <div className="column left aligned">
@@ -192,14 +192,14 @@ const HabitList = () => {
             </div>
 
             <div className="column right aligned three wide">
-              <div style={{ transform: "" }} class="ui fitted">
+              <div style={{ transform: "" }} className="ui fitted">
                 <button
                   onClick={() => {
                     onPositiveHabit(habit);
                   }}
                   className="ui button"
                 >
-                  <i style={{ margin: "0px" }} class="plus circle icon"></i>
+                  <i style={{ margin: "0px" }} className="plus circle icon"></i>
                 </button>
                 <button
                   onClick={() => {
@@ -207,7 +207,10 @@ const HabitList = () => {
                   }}
                   className="ui button"
                 >
-                  <i style={{ margin: "0px" }} class="minus circle icon"></i>
+                  <i
+                    style={{ margin: "0px" }}
+                    className="minus circle icon"
+                  ></i>
                 </button>
                 <label></label>
               </div>
@@ -222,9 +225,9 @@ const HabitList = () => {
     <Fragment>
       <ToastContainer />
       <form onSubmit={handleSubmit}>
-        <div class="ui grid container equal width">
-          <div class="column row">
-            <div class="left aligned column">
+        <div className="ui grid container equal width">
+          <div className="column row">
+            <div className="left aligned column">
               <div className="fluid ui input">
                 <input
                   type="text"
@@ -234,7 +237,7 @@ const HabitList = () => {
                 />
               </div>
             </div>
-            <div class="right aligned column">
+            <div className="right aligned column">
               <button className="fluid ui button" type="submit">
                 Add Habit
               </button>
@@ -242,7 +245,7 @@ const HabitList = () => {
           </div>
         </div>
       </form>
-      <div class="ui raised segments">
+      <div className="ui raised segments">
         <div>{renderList}</div>
       </div>
     </Fragment>

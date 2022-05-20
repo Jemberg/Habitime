@@ -10,7 +10,6 @@ import Settings from "./components/settings";
 
 import "react-toastify/dist/ReactToastify.css";
 import "semantic-ui-css/semantic.min.css";
-import "semantic-ui-css/semantic.min.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

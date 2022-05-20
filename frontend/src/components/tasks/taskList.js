@@ -1,10 +1,8 @@
-import axios from "axios";
 import Cookies from "js-cookie";
 import React, { useEffect, useState, Fragment, Section, Form } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 import { checkAuthentication } from "../../auth/auth";
-import Layout from "../layout";
 import Task from "./task";
 import EditTaskModal from "./editTaskModal";
 
@@ -72,7 +70,6 @@ const TaskList = () => {
     console.log(`Adding task with the ID of ${checkAuthentication()._id}`);
 
     var raw = JSON.stringify({
-      // user: checkAuthentication()._id,
       name: item.name,
     });
 
@@ -179,8 +176,8 @@ const TaskList = () => {
   };
 
   const renderList = taskList.map((task) => (
-    <Fragment>
-      <div style={{ margin: "0px" }} class="ui segment">
+    <Fragment key={task._id}>
+      <div style={{ margin: "0px" }} className="ui segment">
         <div className="ui grid container stackable equal width">
           <div className="row">
             <div className="column left aligned">
@@ -193,7 +190,10 @@ const TaskList = () => {
             </div>
 
             <div className="column right aligned three wide">
-              <div style={{ transform: "scale(2)" }} class="ui fitted checkbox">
+              <div
+                style={{ transform: "scale(2)" }}
+                className="ui fitted checkbox"
+              >
                 <input
                   id={task._id}
                   checked={task.completed}
@@ -216,9 +216,9 @@ const TaskList = () => {
     <Fragment>
       <ToastContainer />
       <form onSubmit={handleSubmit}>
-        <div class="ui grid container equal width">
-          <div class="column row">
-            <div class="left aligned column">
+        <div className="ui grid container equal width">
+          <div className="column row">
+            <div className="left aligned column">
               <div className="fluid ui input">
                 <input
                   type="text"
@@ -228,7 +228,7 @@ const TaskList = () => {
                 />
               </div>
             </div>
-            <div class="right aligned column">
+            <div className="right aligned column">
               <button className="fluid ui button" type="submit">
                 Add Task
               </button>
@@ -236,7 +236,7 @@ const TaskList = () => {
           </div>
         </div>
       </form>
-      <div class="ui raised segments">
+      <div className="ui raised segments">
         <div>{renderList}</div>
       </div>
     </Fragment>
