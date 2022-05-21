@@ -1,13 +1,66 @@
 const express = require("express");
+const moment = require("moment"); // require
+moment().format();
 
+const User = require("../models/user");
 const Periodical = require("../models/periodical");
 const auth = require("../middleware/auth");
+const { utc } = require("moment");
 
 const router = new express.Router();
 
 router.get("/periodical", auth, async (request, response) => {
   try {
     const periodicals = await Periodical.find({ createdBy: request.user._id });
+
+    periodicals.forEach((periodical) => {
+      if (
+        periodical.completed === true &&
+        periodical.nextDueDate < new Date()
+      ) {
+        const updatePeriodical = Periodical.findById(periodical._id);
+
+        console.log("Completed task that needs to be reset, resetting...");
+        updatePeriodical.completed = false;
+
+        switch (updatePeriodical.frequency) {
+          case "Monthly":
+            updatePeriodical.nextDueDate = moment()
+              .utc()
+              .startOf("month")
+              .add(1, "month")
+              .toDate();
+            break;
+          case "Weekly":
+            updatePeriodical.nextDueDate = moment()
+              .utc()
+              .startOf("isoWeek")
+              .add(1, "week")
+              .toDate();
+            break;
+          case "Daily":
+            updatePeriodical.nextDueDate = moment()
+              .utc()
+              .startOf("day")
+              .add(1, "day")
+              .toDate();
+            break;
+          default:
+            break;
+        }
+
+        // updatePeriodical.save();
+      }
+
+      console.log(periodical.nextDueDate);
+      if (periodical.nextDueDate < new Date()) {
+        console.log(
+          "nextReset is smaller than new date, resetting counter and setting date further"
+        );
+        console.log(periodical.nextDueDate, new Date());
+      }
+    });
+
     response.status(200).send({ success: true, periodicals: periodicals });
   } catch (error) {
     console.log(error);
@@ -63,23 +116,43 @@ router.patch("/periodical/:id", auth, async (request, response) => {
     "nextDueDate",
   ];
 
-  console.log(request.body);
+  console.log(request.body.frequency);
 
-  // if (request.body[frequency] === "Weekly") {
-  //   const nextMonday = new Date();
-  //   nextMonday.setDate(
-  //     nextMonday.getDate() + ((7 - nextMonday.getDay() + 1) % 7 || 7)
-  //   );
-  //   request.body[nextDueDate] = nextMonday;
-  // }
+  switch (request.body.frequency) {
+    case "Monthly":
+      request.body.nextDueDate = moment()
+        .utc()
+        .startOf("month")
+        .add(1, "month")
+        .toDate();
+      break;
+    case "Weekly":
+      request.body.nextDueDate = moment()
+        .utc()
+        .startOf("isoWeek")
+        .add(1, "week")
+        .toDate();
+      break;
+    case "Daily":
+      request.body.nextDueDate = moment()
+        .utc()
+        .startOf("day")
+        .add(1, "day")
+        .toDate();
+      break;
+    default:
+      break;
+  }
 
-  // if (request.body[frequency] === "Monthly") {
-  //   const nextMonth = new Date();
-  //   nextMonth.setDate(date.getFullYear(), date.getMonth() + 1, 1);
-  //   request.body[nextDueDate] = nextMonth;
-  // }
+  if (request.body.completed) {
+    const user = await User.findById(request.user._id);
 
-  // console.log(request.body[nextDueDate]);
+    user.doneRecurring++;
+    user.save();
+    console.log("doneRecurring:", user.doneRecurring);
+  }
+
+  // console.log(request.body.nextDueDate);
 
   const isValid = requestedUpdates.every((update) => {
     return allowedUpdates.includes(update);
@@ -101,6 +174,12 @@ router.patch("/periodical/:id", auth, async (request, response) => {
       return response
         .status(404)
         .send({ success: false, error: "Periodical task has not been found." });
+    }
+
+    if (request.body.nextDueDate) {
+      console.log(request.body.nextDueDate);
+      periodical["nextDueDate"] = request.body.nextDueDate;
+      await periodical.save();
     }
 
     requestedUpdates.forEach((update) => {

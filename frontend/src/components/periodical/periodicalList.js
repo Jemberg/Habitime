@@ -149,7 +149,8 @@ const PeriodicalList = ({ filter }) => {
       completed: item.completed,
       category: item.category,
       priority: item.priority,
-      dueDate: item.dueDate /* .toUTCString() */,
+      dueDate: item.dueDate,
+      frequency: item.frequency /* .toUTCString() */,
     });
 
     console.log(raw);
