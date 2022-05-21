@@ -39,7 +39,7 @@ const periodicalSchema = new mongoose.Schema({
   // TODO: nextDueDate triggers a function that unchecks the complete state and adds completed task to user total score.
   nextDueDate: {
     type: Date,
-    default: getNextDay(),
+    default: getNextDay().setHours(0, 0, 0, 0),
   },
 });
 

@@ -9,13 +9,39 @@ import Cookies from "js-cookie";
 const Settings = () => {
   const [categoryList, setCategoryList] = useState({});
   const [newCategory, setNewCategory] = useState({});
-  // TODO: Add color selector and saving for category.
-  const [user, setUser] = useState({});
+
+  const [confirmPass, setConfirmPass] = useState("");
+  const [credentials, setCredentials] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleConfirmPass = (event) => {
+    setConfirmPass(event.target.value);
+  };
 
   const handleChange = (event) => {
-    console.log(event.target.name, " ", event.target.value);
-    setUser({ ...user, [event.target.name]: event.target.value });
+    setCredentials({ ...credentials, [event.target.name]: event.target.value });
   };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // Checks if password matches confirmPassword.
+    if (credentials.password !== confirmPass) {
+      setCredentials({
+        username: "",
+        email: "",
+        password: "",
+      });
+      setConfirmPass("");
+      toast.error("Passwords did not match, please try again.");
+      return;
+    }
+  };
+
+  // TODO: Add color selector and saving for category.
 
   const handleCategoryChange = (event) => {
     console.log(event.target.name, " ", event.target.value);
@@ -116,22 +142,22 @@ const Settings = () => {
   };
 
   const renderList = Array.from(categoryList).map((category) => (
-    <Fragment>
-      <div class="ui middle aligned divided list">
-        <div class="item">
-          <div class="right floated content">
+    <Fragment key={category._id}>
+      <div className="ui middle aligned divided list">
+        <div className="item">
+          <div className="right floated content">
             <div
               value={category._id}
               onClick={() => {
                 removeCategory(category._id);
               }}
-              class="ui button red"
+              className="ui button red"
             >
               Delete
             </div>
           </div>
           {/* TODO: Add editing option as well. */}
-          <div class="content">{category.name}</div>
+          <div className="content">{category.name}</div>
         </div>
       </div>
     </Fragment>
@@ -144,7 +170,7 @@ const Settings = () => {
         <div className="ui grid container stackable equal width">
           <div className="row">
             <div className="column">
-              <h2 class="ui header">Change Username</h2>
+              <h2 className="ui header">Change Username</h2>
               <form className="ui form">
                 <div className="field">
                   <label>Username</label>
@@ -152,7 +178,7 @@ const Settings = () => {
                     onChange={handleChange}
                     type="text"
                     name="name"
-                    placeholder={user.name}
+                    placeholder={credentials.username}
                   />
                 </div>
                 <button className="ui button green" onClick={() => {}}>
@@ -160,7 +186,7 @@ const Settings = () => {
                 </button>
               </form>
 
-              <h2 class="ui header">Change E-mail Address</h2>
+              <h2 className="ui header">Change E-mail Address</h2>
               <form className="ui form">
                 <div className="field">
                   <label>Old E-mail Address</label>
@@ -168,14 +194,14 @@ const Settings = () => {
                     onChange={handleChange}
                     type="password"
                     name="name"
-                    placeholder={user.name}
+                    placeholder={credentials.email}
                   />
                   <label>New E-mail Address</label>
                   <input
                     onChange={handleChange}
                     type="password"
                     name="name"
-                    placeholder={user.name}
+                    placeholder="Please enter a new email."
                   />
                 </div>
                 <button className="ui button green" onClick={() => {}}>
@@ -183,29 +209,22 @@ const Settings = () => {
                 </button>
               </form>
 
-              <h2 class="ui header">Change Password</h2>
+              <h2 className="ui header">Change Password</h2>
               <form className="ui form">
                 <div className="field">
-                  <label>Old Password</label>
-                  <input
-                    onChange={handleChange}
-                    type="password"
-                    name="name"
-                    placeholder={user.name}
-                  />
                   <label>New Password</label>
                   <input
                     onChange={handleChange}
                     type="password"
                     name="name"
-                    placeholder={user.name}
+                    placeholder="Please enter new password."
                   />
                   <label>Confirm New Password</label>
                   <input
-                    onChange={handleChange}
+                    onChange={handleConfirmPass}
                     type="password"
                     name="name"
-                    placeholder={user.name}
+                    placeholder={"Please confirm new password."}
                   />
                 </div>
                 <button className="ui button green" onClick={() => {}}>
@@ -214,7 +233,7 @@ const Settings = () => {
               </form>
             </div>
             <div className="column">
-              <h2 class="ui header">Category Options</h2>
+              <h2 className="ui header">Category Options</h2>
               <form className="ui form" action="">
                 <label>Add New Category</label>
                 <div className="field">
@@ -232,11 +251,12 @@ const Settings = () => {
                   Add New Category
                 </button>
               </form>
-              <h2 class="ui header">Currently Available Categories:</h2>
+              <h2 className="ui header">Currently Available Categories:</h2>
               {renderList}
             </div>
             <div className="column">
-              <h2 class="ui header">Account Options</h2>
+              <h2 className="ui header">Account Options</h2>
+              <div className="field"></div>
               <button className="ui button red" onClick={() => {}}>
                 Delete Account
               </button>

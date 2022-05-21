@@ -42,20 +42,21 @@ const habitSchema = new mongoose.Schema({
   nextReset: {
     type: Date,
     // TODO: Probably won't work, but has to add 7 days to current date.
-    default: getNextMonday(),
+    default: getNextMonday().setHours(0, 0, 0, 0),
   },
   // Habit cannot be completed, the goal is used for the statistics to see how well the user has done.
 });
 
 // TODO: Fix finding next monday.
 function getNextMonday() {
+  // https://bobbyhadz.com/blog/javascript-get-date-of-next-monday
   const nextMonday = new Date();
   nextMonday.setDate(
     // Add 1 to the day of the week, cause getDay returns values that start with Sunday, 0.
     // Get remainder by using %.
     // If remainder is 0, then it is Monday currently and it has to default to 7 to get the next Monday instead.
     // getDate then returns the day of the month for the next Monday based on those calculations.
-    nextMonday.getDate() + ((8 - nextMonday.getDay() + 1) % 8 || 8)
+    nextMonday.getDate() + ((7 - nextMonday.getDay() + 1) % 7 || 7)
   );
   return nextMonday;
 }

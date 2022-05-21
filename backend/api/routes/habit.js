@@ -8,6 +8,19 @@ const router = new express.Router();
 router.get("/habits", auth, async (request, response) => {
   try {
     const habits = await Habit.find({ createdBy: request.user._id });
+
+    // When requesting all habits, server checks if next repeat is today or before today.
+    // If so, reset completed to false, set next date to next day/week/month.
+    habits.forEach((habit) => {
+      console.log(habit.nextReset);
+      if (habit.nextReset < new Date()) {
+        console.log(
+          "nextReset is smaller than new date, resetting counter and setting date further"
+        );
+        console.log(habit.nextReset, new Date());
+      }
+    });
+
     response.status(200).send({ success: true, habits: habits });
   } catch (error) {
     console.log(error);
@@ -60,8 +73,10 @@ router.patch("/habits/:id", auth, async (request, response) => {
     "priority",
     "counter",
     "goal",
-    "frequency",
+    "resetFrequency",
   ];
+
+  console.log(request.body);
 
   const isValid = requestedUpdates.every((update) => {
     return allowedUpdates.includes(update);

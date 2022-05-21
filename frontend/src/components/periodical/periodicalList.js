@@ -8,7 +8,7 @@ import Layout from "../layout";
 import Periodical from "./periodical";
 import EditPeriodicalModal from "./editPeriodicalModal";
 
-const PeriodicalList = () => {
+const PeriodicalList = ({ filter }) => {
   var myHeaders = new Headers();
   myHeaders.append("auth_token", Cookies.get("token"));
   myHeaders.append("Content-Type", "application/json");

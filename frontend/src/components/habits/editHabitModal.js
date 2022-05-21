@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
 
+import CategoryDropdown from "../categoryDropdown";
+import { Dropdown } from "semantic-ui-react";
+
 Modal.setAppElement("#root");
 
 const EditHabitModal = (props) => {
@@ -19,12 +22,46 @@ const EditHabitModal = (props) => {
     setIsOpen(false);
   }
 
-  const [habit, setTask] = useState({});
+  const [habit, setHabit] = useState({});
 
   const handleChange = (event) => {
     console.log(event.target.name, " ", event.target.value);
-    setTask({ ...habit, [event.target.name]: event.target.value });
+    setHabit({ ...habit, [event.target.name]: event.target.value });
   };
+
+  const [category, setCategory] = useState("");
+
+  const handleCategoryChange = (event) => {
+    console.log(category);
+    if (category) {
+      setHabit({ ...habit, category: category });
+    }
+  };
+
+  const handleFrequencyChange = (event, data) => {
+    console.log(data.value);
+    if (data.value) {
+      setHabit({ ...habit, resetFrequency: data.value });
+    }
+  };
+
+  const frequencyOptions = [
+    {
+      key: "Daily",
+      text: "Daily",
+      value: "Daily",
+    },
+    {
+      key: "Weekly",
+      text: "Weekly",
+      value: "Weekly",
+    },
+    {
+      key: "Monthly",
+      text: "Monthly",
+      value: "Monthly",
+    },
+  ];
 
   return (
     <div>
@@ -69,29 +106,41 @@ const EditHabitModal = (props) => {
               placeholder={props.itemProps.priority}
             />
           </div>
-          {/* TODO: Category list must be imported via API. */}
           <div className="field">
-            <label>Category</label>
+            <label>Goal</label>
             <input
               onChange={handleChange}
-              type="text"
-              name="category"
-              placeholder={props.itemProps.category}
+              type="number"
+              name="goal"
+              min="1"
+              placeholder={props.itemProps.goal}
             />
           </div>
+          {/* TODO: Category list must be imported via API. */}
           <div className="field">
-            <label>Due Date</label>
-            <input
-              onChange={handleChange}
-              type="date"
-              name="dueDate"
-              placeholder={props.itemProps.dueDate}
+            <label>Category (Currently ID: {props.itemProps.category})</label>
+            <CategoryDropdown setCategory={setCategory}></CategoryDropdown>
+          </div>
+          <div className="field">
+            <label>Frequency</label>
+            <Dropdown
+              placeholder={props.itemProps.resetFrequency}
+              fluid
+              selection
+              options={frequencyOptions}
+              onChange={handleFrequencyChange}
             />
           </div>
           <button
             className="ui button green"
             onClick={() => {
-              props.editTask(habit);
+              handleCategoryChange();
+              // TODO: frequencyChange refreshes page on submission, have to fix.
+              // TODO: category does not send to back-end.
+              // handleFrequencyChange();
+              console.log("Sending habit: ", habit);
+              props.editHabit(habit);
+              setHabit({});
               closeModal();
             }}
           >
@@ -100,7 +149,7 @@ const EditHabitModal = (props) => {
           <button
             className="ui button red"
             onClick={() => {
-              props.removeTask();
+              props.removeHabit();
               closeModal();
             }}
           >

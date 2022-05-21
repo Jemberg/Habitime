@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 
 const Periodical = ({ item }) => {
-  const localDate = new Date(item.dueDate);
+  const localDate = new Date(item.nextDueDate);
 
   return (
     <Fragment>
@@ -9,7 +9,7 @@ const Periodical = ({ item }) => {
         <h2>{item.name}</h2>
         <p>{item.description}</p>
         {/* TODO: Add "Repeats daily/weekly/monthly, next occourence on: Date()" */}
-        {item.dueDate ? <p>{localDate.toString()}</p> : ""}
+        <p>Next due: {localDate.toString()}</p>
       </div>
     </Fragment>
   );

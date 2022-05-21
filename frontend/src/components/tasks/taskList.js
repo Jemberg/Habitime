@@ -6,10 +6,15 @@ import { checkAuthentication } from "../../auth/auth";
 import Task from "./task";
 import EditTaskModal from "./editTaskModal";
 
-const TaskList = () => {
+const TaskList = ({ filter }) => {
   var myHeaders = new Headers();
   myHeaders.append("auth_token", Cookies.get("token"));
   myHeaders.append("Content-Type", "application/json");
+
+  const [item, setItem] = useState({
+    name: "",
+    description: "",
+  });
 
   useEffect(() => {
     var requestOptions = {
@@ -35,11 +40,6 @@ const TaskList = () => {
         toast.error(error.message);
       });
   }, []);
-
-  const [item, setItem] = useState({
-    name: "",
-    description: "",
-  });
 
   const handleChange = (event) => {
     setItem({ ...item, [event.target.name]: event.target.value });
@@ -175,42 +175,67 @@ const TaskList = () => {
       });
   };
 
-  const renderList = taskList.map((task) => (
-    <Fragment key={task._id}>
-      <div style={{ margin: "0px" }} className="ui segment">
-        <div className="ui grid container stackable equal width">
-          <div className="row">
-            <div className="column left aligned">
-              <Task key={task._id} item={task}></Task>
-              <EditTaskModal
-                removeTask={() => removeTask(task._id)}
-                editTask={(updatedItem) => editTask(task._id, updatedItem)}
-                itemProps={task}
-              ></EditTaskModal>
-            </div>
+  const renderList = Array.from(taskList)
+    .filter((task) => {
+      switch (filter) {
+        case "All":
+          return task;
+          break;
+        case "Completed":
+          if (task.completed === true) return task;
+          break;
+        case "Active":
+          if (task.completed === false) return task;
+          break;
+        case "highPriority":
+          if (task.priority === 3) return task;
+          break;
+        case "mediumPriority":
+          if (task.priority === 2) return task;
+          break;
+        case "lowPriority":
+          if (task.priority === 1) return task;
+          break;
 
-            <div className="column right aligned three wide">
-              <div
-                style={{ transform: "scale(2)" }}
-                className="ui fitted checkbox"
-              >
-                <input
-                  id={task._id}
-                  checked={task.completed}
-                  onChange={() => {}}
-                  onClick={() => {
-                    onCompleteSubmit(task._id, !task.completed);
-                  }}
-                  type="checkbox"
-                />
-                <label></label>
+        default:
+      }
+    })
+    .map((task) => (
+      <Fragment key={task._id}>
+        <div style={{ margin: "0px" }} className="ui segment">
+          <div className="ui grid container stackable equal width">
+            <div className="row">
+              <div className="column left aligned">
+                <Task key={task._id} item={task}></Task>
+                <EditTaskModal
+                  removeTask={() => removeTask(task._id)}
+                  editTask={(updatedItem) => editTask(task._id, updatedItem)}
+                  itemProps={task}
+                ></EditTaskModal>
+              </div>
+
+              <div className="column right aligned three wide">
+                <div
+                  style={{ transform: "scale(2)" }}
+                  className="ui fitted checkbox"
+                >
+                  <input
+                    id={task._id}
+                    checked={task.completed}
+                    onChange={() => {}}
+                    onClick={() => {
+                      onCompleteSubmit(task._id, !task.completed);
+                    }}
+                    type="checkbox"
+                  />
+                  <label></label>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </Fragment>
-  ));
+      </Fragment>
+    ));
 
   return (
     <Fragment>

@@ -8,7 +8,7 @@ import Layout from "../layout";
 import Habit from "./habit";
 import EditHabitModal from "./editHabitModal";
 
-const HabitList = () => {
+const HabitList = ({ filter }) => {
   var myHeaders = new Headers();
   myHeaders.append("auth_token", Cookies.get("token"));
   myHeaders.append("Content-Type", "application/json");
@@ -135,7 +135,7 @@ const HabitList = () => {
       category: item.category,
       counter: item.counter,
       priority: item.priority,
-      dueDate: item.dueDate /* .toUTCString() */,
+      goal: item.goal,
     });
 
     console.log(raw);
@@ -182,7 +182,7 @@ const HabitList = () => {
       <div style={{ margin: "0px" }} className="ui segment">
         <div className="ui grid container stackable equal width">
           <div className="row">
-            <div className="column left aligned">
+            <div className="left aligned nine wide column">
               <Habit key={habit._id} item={habit}></Habit>
               <EditHabitModal
                 removeHabit={() => removeHabit(habit._id)}
@@ -191,8 +191,8 @@ const HabitList = () => {
               ></EditHabitModal>
             </div>
 
-            <div className="column right aligned three wide">
-              <div style={{ transform: "" }} className="ui fitted">
+            <div className="column seven wide">
+              <div style={{ transform: "" }}>
                 <button
                   onClick={() => {
                     onPositiveHabit(habit);

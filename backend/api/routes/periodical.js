@@ -60,10 +60,26 @@ router.patch("/periodical/:id", auth, async (request, response) => {
     "description",
     "priority",
     "frequency",
-    "goal",
+    "nextDueDate",
   ];
 
-  // TODO: Check if goal is met, then automatically mark task as completed.
+  console.log(request.body);
+
+  // if (request.body[frequency] === "Weekly") {
+  //   const nextMonday = new Date();
+  //   nextMonday.setDate(
+  //     nextMonday.getDate() + ((7 - nextMonday.getDay() + 1) % 7 || 7)
+  //   );
+  //   request.body[nextDueDate] = nextMonday;
+  // }
+
+  // if (request.body[frequency] === "Monthly") {
+  //   const nextMonth = new Date();
+  //   nextMonth.setDate(date.getFullYear(), date.getMonth() + 1, 1);
+  //   request.body[nextDueDate] = nextMonth;
+  // }
+
+  // console.log(request.body[nextDueDate]);
 
   const isValid = requestedUpdates.every((update) => {
     return allowedUpdates.includes(update);

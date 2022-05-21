@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
+import { Dropdown } from "semantic-ui-react";
+
+import CategoryDropdown from "../categoryDropdown";
 
 Modal.setAppElement("#root");
 
@@ -19,12 +22,41 @@ const EditPeriodicalModal = (props) => {
     setIsOpen(false);
   }
 
-  const [periodical, setTask] = useState({});
+  const [periodical, setPeriodical] = useState({});
 
   const handleChange = (event) => {
     console.log(event.target.name, " ", event.target.value);
-    setTask({ ...periodical, [event.target.name]: event.target.value });
+    setPeriodical({ ...periodical, [event.target.name]: event.target.value });
   };
+
+  const [category, setCategory] = useState("");
+
+  const handleCategoryChange = (event) => {
+    setPeriodical({ ...periodical, category: category });
+  };
+
+  const handleFrequencyChange = (event, data) => {
+    console.log(data.value);
+    setPeriodical({ ...periodical, frequency: data.value });
+  };
+
+  const frequencyOptions = [
+    {
+      key: "Daily",
+      text: "Daily",
+      value: "Daily",
+    },
+    {
+      key: "Weekly",
+      text: "Weekly",
+      value: "Weekly",
+    },
+    {
+      key: "Monthly",
+      text: "Monthly",
+      value: "Monthly",
+    },
+  ];
 
   return (
     <div>
@@ -71,28 +103,29 @@ const EditPeriodicalModal = (props) => {
           </div>
           {/* TODO: Category list must be imported via API. */}
           <div className="field">
-            <label>Category</label>
-            <input
-              onChange={handleChange}
-              type="text"
-              name="category"
-              placeholder={props.itemProps.category}
-            />
+            <label>Category (Currently ID: {props.itemProps.category})</label>
+            <CategoryDropdown setCategory={setCategory}></CategoryDropdown>
           </div>
           <div className="field">
-            <label>Due Date</label>
-            <input
-              onChange={handleChange}
-              type="date"
-              name="dueDate"
-              placeholder={props.itemProps.dueDate}
+            <label>Frequency</label>
+            <Dropdown
+              placeholder={props.itemProps.frequency}
+              fluid
+              selection
+              options={frequencyOptions}
+              onChange={handleFrequencyChange}
             />
           </div>
           <button
             className="ui button green"
             onClick={() => {
-              props.editTask(periodical);
+              handleCategoryChange();
+              // TODO: frequencyChange refreshes page on submission, have to fix.
+              // TODO: category does not send to back-end.
+              // handleFrequencyChange();
+              props.editPeriodical(periodical);
               toast.success("Periodical has been edited!");
+              setPeriodical({});
               closeModal();
             }}
           >
@@ -101,7 +134,7 @@ const EditPeriodicalModal = (props) => {
           <button
             className="ui button red"
             onClick={() => {
-              props.removeTask();
+              props.removePeriodical();
               closeModal();
             }}
           >

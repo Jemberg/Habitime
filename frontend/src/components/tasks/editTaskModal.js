@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
+import CategoryDropdown from "../categoryDropdown";
 
 Modal.setAppElement("#root");
 
 const EditTaskModal = (props) => {
   const [modalIsOpen, setIsOpen] = React.useState(false);
-
+  const [task, setTask] = useState({});
   function openModal() {
     setIsOpen(true);
   }
@@ -19,11 +20,16 @@ const EditTaskModal = (props) => {
     setIsOpen(false);
   }
 
-  const [task, setTask] = useState({});
-
   const handleChange = (event) => {
     console.log(event.target.name, " ", event.target.value);
     setTask({ ...task, [event.target.name]: event.target.value });
+  };
+
+  const [category, setCategory] = useState("");
+
+  const handleCategoryChange = () => {
+    console.log("Category is: ", category);
+    setTask({ ...task, category: "Test" });
   };
 
   return (
@@ -69,15 +75,9 @@ const EditTaskModal = (props) => {
               placeholder={props.itemProps.priority}
             />
           </div>
-          {/* TODO: Category list must be imported via API. */}
           <div className="field">
-            <label>Category</label>
-            <input
-              onChange={handleChange}
-              type="text"
-              name="category"
-              placeholder={props.itemProps.category}
-            />
+            <label>Category (Currently ID: {props.itemProps.category})</label>
+            <CategoryDropdown setCategory={setCategory}></CategoryDropdown>
           </div>
           <div className="field">
             <label>Due Date</label>
@@ -91,8 +91,12 @@ const EditTaskModal = (props) => {
           <button
             className="ui button green"
             onClick={() => {
+              handleCategoryChange();
+              console.log("Right before saving, category:", category);
               props.editTask(task);
               toast.success("Task has been edited!");
+              console.log(task); // selected category from categoryDropdown
+              setTask({});
               closeModal();
             }}
           >
