@@ -19,6 +19,7 @@ const EditHabitModal = (props) => {
   }
 
   function closeModal() {
+    setHabit(null);
     setIsOpen(false);
   }
 
@@ -32,10 +33,11 @@ const EditHabitModal = (props) => {
   const [category, setCategory] = useState("");
 
   const handleCategoryChange = (event) => {
-    console.log(category);
-    if (category) {
-      setHabit({ ...habit, category: category });
-    }
+    console.log("IN HANDLECATEGORYCHANGE: ", category);
+    setHabit({ ...habit, category: category });
+    // if (category) {
+    //   setHabit({ ...habit, category: category });
+    // }
   };
 
   const handleFrequencyChange = (event, data) => {
@@ -134,13 +136,14 @@ const EditHabitModal = (props) => {
           <button
             className="ui button green"
             onClick={() => {
-              handleCategoryChange();
+              // handleCategoryChange();
               // TODO: frequencyChange refreshes page on submission, have to fix.
               // TODO: category does not send to back-end.
               // handleFrequencyChange();
-              console.log("Sending habit: ", habit);
+              console.log("ONCLICK HABIT: ", habit);
+              console.log("ONCLICK CATEGORY:", category);
+              setHabit({ ...habit, category: `${category}` });
               props.editHabit(habit);
-              setHabit({});
               closeModal();
             }}
           >

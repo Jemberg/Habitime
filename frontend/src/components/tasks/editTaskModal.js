@@ -17,6 +17,7 @@ const EditTaskModal = (props) => {
   }
 
   function closeModal() {
+    setTask({});
     setIsOpen(false);
   }
 
@@ -96,7 +97,6 @@ const EditTaskModal = (props) => {
               props.editTask(task);
               toast.success("Task has been edited!");
               console.log(task); // selected category from categoryDropdown
-              setTask({});
               closeModal();
             }}
           >

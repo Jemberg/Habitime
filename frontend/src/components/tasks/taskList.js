@@ -198,6 +198,8 @@ const TaskList = ({ filter }) => {
           break;
 
         default:
+          if (task.category === filter) return task;
+          break;
       }
     })
     .map((task) => (

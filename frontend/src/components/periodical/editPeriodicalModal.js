@@ -19,6 +19,7 @@ const EditPeriodicalModal = (props) => {
   }
 
   function closeModal() {
+    setPeriodical(null);
     setIsOpen(false);
   }
 
@@ -35,7 +36,12 @@ const EditPeriodicalModal = (props) => {
     setPeriodical({ ...periodical, category: category });
   };
 
+  const handleCategorySubmit = () => {
+    setPeriodical({ ...periodical, category: category });
+  };
+
   const handleFrequencyChange = (event, data) => {
+    // event.preventDefault();
     console.log(data.value);
     setPeriodical({ ...periodical, frequency: data.value });
   };
@@ -119,13 +125,13 @@ const EditPeriodicalModal = (props) => {
           <button
             className="ui button green"
             onClick={() => {
-              handleCategoryChange();
+              handleCategorySubmit();
               // TODO: frequencyChange refreshes page on submission, have to fix.
               // TODO: category does not send to back-end.
-              // handleFrequencyChange();
+              console.log(category);
+              // setPeriodical({ ...periodical, category: category });
               props.editPeriodical(periodical);
               toast.success("Periodical has been edited!");
-              setPeriodical({});
               closeModal();
             }}
           >

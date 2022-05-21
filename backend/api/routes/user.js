@@ -93,7 +93,7 @@ router.patch("/users/me", auth, async (req, res) => {
 
     await user.save();
 
-    res.statis(200).send({ success: true, user: user });
+    res.status(200).send({ success: true, user: user });
   } catch (error) {
     res.status(400).send({ success: false, error: error.message });
   }
