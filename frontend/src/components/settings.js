@@ -34,7 +34,6 @@ const Settings = () => {
       });
       setConfirmPass("");
       toast.error("Passwords did not match, please try again.");
-      return;
     }
   };
 
@@ -97,15 +96,15 @@ const Settings = () => {
     fetch("http://localhost:3000/users/me", requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        console.log(parsed);
         const parsed = JSON.parse(result);
+        localStorage.setItem("user", JSON.stringify(parsed.user));
 
         if (!parsed.success) {
           throw new Error(`There was an error: ${parsed.error}`);
         }
 
         toast.success("User has been updated!");
-        setCredentials((oldList) => [...oldList, parsed.credentials]);
+        setCredentials((oldList) => [parsed.credentials]);
       })
       .catch((error) => {
         console.log("error", error);
@@ -203,7 +202,7 @@ const Settings = () => {
               <h2 className="ui header">Change Username</h2>
               <form className="ui form">
                 <div className="field">
-                  <label>Username</label>
+                  <label>Username: {checkAuthentication().username}</label>
                   <input
                     onChange={handleChange}
                     type="text"
@@ -211,7 +210,13 @@ const Settings = () => {
                     placeholder={credentials.username}
                   />
                 </div>
-                <button className="ui button green" onClick={updateUser}>
+                <button
+                  className="ui button green"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    updateUser(credentials);
+                  }}
+                >
                   Confirm New Username
                 </button>
               </form>
@@ -219,7 +224,7 @@ const Settings = () => {
               <h2 className="ui header">Change E-mail Address</h2>
               <form className="ui form">
                 <div className="field">
-                  <label>New E-mail Address</label>
+                  <label>E-mail Address: {checkAuthentication().email}</label>
                   <input
                     onChange={handleChange}
                     type="email"
@@ -256,7 +261,13 @@ const Settings = () => {
                     placeholder={"Please confirm new password."}
                   />
                 </div>
-                <button className="ui button green" onClick={() => {}}>
+                <button
+                  className="ui button green"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    updateUser(credentials);
+                  }}
+                >
                   Confirm New Password
                 </button>
               </form>

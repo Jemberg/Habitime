@@ -28,9 +28,8 @@ const EditTaskModal = (props) => {
 
   const [category, setCategory] = useState("");
 
-  const handleCategoryChange = () => {
-    console.log("Category is: ", category);
-    setTask({ ...task, category: "Test" });
+  const handleCategoryChange = (category) => {
+    setTask({ ...task, category: category });
   };
 
   return (
@@ -77,8 +76,11 @@ const EditTaskModal = (props) => {
             />
           </div>
           <div className="field">
-            <label>Category (Currently ID: {props.itemProps.category})</label>
-            <CategoryDropdown setCategory={setCategory}></CategoryDropdown>
+            <label>Category</label>
+            <CategoryDropdown
+              defaultValue={props.itemProps.category}
+              handleCategoryChange={handleCategoryChange}
+            ></CategoryDropdown>
           </div>
           <div className="field">
             <label>Due Date</label>

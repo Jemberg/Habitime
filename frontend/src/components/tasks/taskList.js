@@ -180,7 +180,6 @@ const TaskList = ({ filter }) => {
       switch (filter) {
         case "All":
           return task;
-          break;
         case "Completed":
           if (task.completed === true) return task;
           break;
@@ -196,7 +195,6 @@ const TaskList = ({ filter }) => {
         case "lowPriority":
           if (task.priority === 1) return task;
           break;
-
         default:
           if (task.category === filter) return task;
           break;

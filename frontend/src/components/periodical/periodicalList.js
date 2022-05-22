@@ -177,44 +177,69 @@ const PeriodicalList = ({ filter }) => {
       });
   };
 
-  const renderList = Array.from(periodicalList).map((periodical) => (
-    <Fragment key={periodical._id}>
-      <div style={{ margin: "0px" }} className="ui segment">
-        <div className="ui grid container stackable equal width">
-          <div className="row">
-            <div className="column left aligned">
-              <Periodical key={periodical._id} item={periodical}></Periodical>
-              <EditPeriodicalModal
-                removePeriodical={() => removePeriodical(periodical._id)}
-                editPeriodical={(updatedItem) =>
-                  editPeriodical(periodical._id, updatedItem)
-                }
-                itemProps={periodical}
-              ></EditPeriodicalModal>
-            </div>
+  const renderList = Array.from(periodicalList)
+    .filter((periodical) => {
+      switch (filter) {
+        case "All":
+          return periodical;
+        case "Completed":
+          if (periodical.completed === true) return periodical;
+          break;
+        case "Active":
+          if (periodical.completed === false) return periodical;
+          break;
+        case "highPriority":
+          if (periodical.priority === 3) return periodical;
+          break;
+        case "mediumPriority":
+          if (periodical.priority === 2) return periodical;
+          break;
+        case "lowPriority":
+          if (periodical.priority === 1) return periodical;
+          break;
+        default:
+          if (periodical.category === filter) return periodical;
+          break;
+      }
+    })
+    .map((periodical) => (
+      <Fragment key={periodical._id}>
+        <div style={{ margin: "0px" }} className="ui segment">
+          <div className="ui grid container stackable equal width">
+            <div className="row">
+              <div className="column left aligned">
+                <Periodical key={periodical._id} item={periodical}></Periodical>
+                <EditPeriodicalModal
+                  removePeriodical={() => removePeriodical(periodical._id)}
+                  editPeriodical={(updatedItem) =>
+                    editPeriodical(periodical._id, updatedItem)
+                  }
+                  itemProps={periodical}
+                ></EditPeriodicalModal>
+              </div>
 
-            <div className="column right aligned three wide">
-              <div
-                style={{ transform: "scale(2)" }}
-                className="ui fitted checkbox"
-              >
-                <input
-                  id={periodical._id}
-                  checked={periodical.completed}
-                  onChange={() => {}}
-                  onClick={() => {
-                    onCompleteSubmit(periodical._id, !periodical.completed);
-                  }}
-                  type="checkbox"
-                />
-                <label></label>
+              <div className="column right aligned three wide">
+                <div
+                  style={{ transform: "scale(2)" }}
+                  className="ui fitted checkbox"
+                >
+                  <input
+                    id={periodical._id}
+                    checked={periodical.completed}
+                    onChange={() => {}}
+                    onClick={() => {
+                      onCompleteSubmit(periodical._id, !periodical.completed);
+                    }}
+                    type="checkbox"
+                  />
+                  <label></label>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </Fragment>
-  ));
+      </Fragment>
+    ));
 
   return (
     <Fragment>

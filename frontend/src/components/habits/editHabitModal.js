@@ -32,12 +32,8 @@ const EditHabitModal = (props) => {
 
   const [category, setCategory] = useState("");
 
-  const handleCategoryChange = (event) => {
-    console.log("IN HANDLECATEGORYCHANGE: ", category);
+  const handleCategoryChange = (category) => {
     setHabit({ ...habit, category: category });
-    // if (category) {
-    //   setHabit({ ...habit, category: category });
-    // }
   };
 
   const handleFrequencyChange = (event, data) => {
@@ -120,8 +116,11 @@ const EditHabitModal = (props) => {
           </div>
           {/* TODO: Category list must be imported via API. */}
           <div className="field">
-            <label>Category (Currently ID: {props.itemProps.category})</label>
-            <CategoryDropdown setCategory={setCategory}></CategoryDropdown>
+            <label>Category</label>
+            <CategoryDropdown
+              defaultValue={props.itemProps.category}
+              handleCategoryChange={handleCategoryChange}
+            ></CategoryDropdown>
           </div>
           <div className="field">
             <label>Frequency</label>

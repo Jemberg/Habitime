@@ -178,49 +178,77 @@ const HabitList = ({ filter }) => {
     editHabit(habit._id, { counter: habit.counter - 1 });
   };
 
-  const renderList = habitList.map((habit) => (
-    <Fragment key={habit._id}>
-      <div style={{ margin: "0px" }} className="ui segment">
-        <div className="ui grid container stackable equal width">
-          <div className="row">
-            <div className="left aligned nine wide column">
-              <Habit key={habit._id} item={habit}></Habit>
-              <EditHabitModal
-                removeHabit={() => removeHabit(habit._id)}
-                editHabit={(updatedItem) => editHabit(habit._id, updatedItem)}
-                itemProps={habit}
-              ></EditHabitModal>
-            </div>
+  const renderList = habitList
+    .filter((habit) => {
+      switch (filter) {
+        case "All":
+          return habit;
+        case "Completed":
+          if (habit.goal <= habit.counter) return habit;
+          break;
+        case "Active":
+          if (habit.goal >= habit.counter) return habit;
+          break;
+        case "highPriority":
+          if (habit.priority === 3) return habit;
+          break;
+        case "mediumPriority":
+          if (habit.priority === 2) return habit;
+          break;
+        case "lowPriority":
+          if (habit.priority === 1) return habit;
+          break;
+        default:
+          if (habit.category === filter) return habit;
+          break;
+      }
+    })
+    .map((habit) => (
+      <Fragment key={habit._id}>
+        <div style={{ margin: "0px" }} className="ui segment">
+          <div className="ui grid container stackable equal width">
+            <div className="row">
+              <div className="left aligned nine wide column">
+                <Habit key={habit._id} item={habit}></Habit>
+                <EditHabitModal
+                  removeHabit={() => removeHabit(habit._id)}
+                  editHabit={(updatedItem) => editHabit(habit._id, updatedItem)}
+                  itemProps={habit}
+                ></EditHabitModal>
+              </div>
 
-            <div className="column seven wide">
-              <div style={{ transform: "" }}>
-                <button
-                  onClick={() => {
-                    onPositiveHabit(habit);
-                  }}
-                  className="ui button"
-                >
-                  <i style={{ margin: "0px" }} className="plus circle icon"></i>
-                </button>
-                <button
-                  onClick={() => {
-                    onNegativeHabit(habit);
-                  }}
-                  className="ui button"
-                >
-                  <i
-                    style={{ margin: "0px" }}
-                    className="minus circle icon"
-                  ></i>
-                </button>
-                <label></label>
+              <div className="column seven wide">
+                <div style={{ transform: "" }}>
+                  <button
+                    onClick={() => {
+                      onPositiveHabit(habit);
+                    }}
+                    className="ui button"
+                  >
+                    <i
+                      style={{ margin: "0px" }}
+                      className="plus circle icon"
+                    ></i>
+                  </button>
+                  <button
+                    onClick={() => {
+                      onNegativeHabit(habit);
+                    }}
+                    className="ui button"
+                  >
+                    <i
+                      style={{ margin: "0px" }}
+                      className="minus circle icon"
+                    ></i>
+                  </button>
+                  <label></label>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </Fragment>
-  ));
+      </Fragment>
+    ));
 
   return (
     <Fragment>
