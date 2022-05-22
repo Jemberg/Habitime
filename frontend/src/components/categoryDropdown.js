@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dropdown } from "semantic-ui-react";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
@@ -18,29 +18,31 @@ const CategoryDropdown = ({ handleCategoryChange, defaultValue }) => {
 
   const [options, setOptions] = useState([]);
 
-  fetch("http://localhost:3000/categories", requestOptions)
-    .then((response) => response.text())
-    .then((result) => {
-      const parsed = JSON.parse(result);
+  useEffect(() => {
+    fetch("http://localhost:3000/categories", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const parsed = JSON.parse(result);
 
-      if (!parsed.success) {
-        throw new Error(`There was an error: ${parsed.error}`);
-      }
+        if (!parsed.success) {
+          throw new Error(`There was an error: ${parsed.error}`);
+        }
 
-      const catOptions = parsed.categories.map((e) => {
-        return {
-          key: e._id,
-          text: e.name,
-          value: e._id,
-          label: { color: e.color, empty: true, circular: true },
-        };
+        const catOptions = parsed.categories.map((e) => {
+          return {
+            key: e._id,
+            text: e.name,
+            value: e._id,
+            label: { color: e.color, empty: true, circular: true },
+          };
+        });
+        setOptions(catOptions);
+      })
+      .catch((error) => {
+        console.log("error", error);
+        toast.error(error.message);
       });
-      setOptions(catOptions);
-    })
-    .catch((error) => {
-      console.log("error", error);
-      toast.error(error.message);
-    });
+  }, []);
 
   return (
     <Dropdown

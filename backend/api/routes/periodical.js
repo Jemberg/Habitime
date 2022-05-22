@@ -18,47 +18,10 @@ router.get("/periodical", auth, async (request, response) => {
         periodical.completed === true &&
         periodical.nextDueDate < new Date()
       ) {
-        const updatePeriodical = Periodical.findById(periodical._id);
-
+        Periodical.checkRecurring(periodical._id);
         console.log("Completed task that needs to be reset, resetting...");
-        updatePeriodical.completed = false;
-
-        switch (updatePeriodical.frequency) {
-          case "Monthly":
-            updatePeriodical.nextDueDate = moment()
-              .utc()
-              .startOf("month")
-              .add(1, "month")
-              .toDate();
-            break;
-          case "Weekly":
-            updatePeriodical.nextDueDate = moment()
-              .utc()
-              .startOf("isoWeek")
-              .add(1, "week")
-              .toDate();
-            break;
-          case "Daily":
-            updatePeriodical.nextDueDate = moment()
-              .utc()
-              .startOf("day")
-              .add(1, "day")
-              .toDate();
-            break;
-          default:
-            break;
-        }
-
-        // updatePeriodical.save();
       }
-
-      console.log(periodical.nextDueDate);
-      if (periodical.nextDueDate < new Date()) {
-        console.log(
-          "nextReset is smaller than new date, resetting counter and setting date further"
-        );
-        console.log(periodical.nextDueDate, new Date());
-      }
+      console.log("Due: ", periodical.nextDueDate, "Now: ", new Date());
     });
 
     response.status(200).send({ success: true, periodicals: periodicals });

@@ -49,6 +49,39 @@ function getNextDay() {
   return tomorrow;
 }
 
+periodicalSchema.statics.checkRecurring = async () => {
+  const periodical = Periodical.findById(id);
+  periodical.completed = false;
+
+  switch (periodical.frequency) {
+    case "Monthly":
+      periodical.nextDueDate = moment()
+        .utc()
+        .startOf("month")
+        .add(1, "month")
+        .toDate();
+      break;
+    case "Weekly":
+      periodical.nextDueDate = moment()
+        .utc()
+        .startOf("isoWeek")
+        .add(1, "week")
+        .toDate();
+      break;
+    case "Daily":
+      periodical.nextDueDate = moment()
+        .utc()
+        .startOf("day")
+        .add(1, "day")
+        .toDate();
+      break;
+    default:
+      break;
+  }
+
+  periodical.save();
+};
+
 const Periodical = mongoose.model("periodical", periodicalSchema);
 
 module.exports = Periodical;

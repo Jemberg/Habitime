@@ -143,7 +143,9 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.pre("remove", async function (next) {
-  await Task.deleteMany({ owner: this._id });
+  await Task.deleteMany({ createdBy: this._id });
+  await Periodical.deleteMany({ createdBy: this._id });
+  await Habit.deleteMany({ createdBy: this._id });
   next();
 });
 
