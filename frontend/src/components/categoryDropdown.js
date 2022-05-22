@@ -3,7 +3,7 @@ import { Dropdown } from "semantic-ui-react";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
-const CategoryDropdown = ({ setCategory }) => {
+const CategoryDropdown = ({ handleCategoryChange, defaultValue }) => {
   const [selected, setSelected] = useState();
 
   var myHeaders = new Headers();
@@ -16,7 +16,8 @@ const CategoryDropdown = ({ setCategory }) => {
     redirect: "follow",
   };
 
-  const options = [];
+  const [options, setOptions] = useState([]);
+
   fetch("http://localhost:3000/categories", requestOptions)
     .then((response) => response.text())
     .then((result) => {
@@ -34,7 +35,7 @@ const CategoryDropdown = ({ setCategory }) => {
           label: { color: e.color, empty: true, circular: true },
         };
       });
-      options.push(...catOptions);
+      setOptions(catOptions);
     })
     .catch((error) => {
       console.log("error", error);
@@ -43,13 +44,13 @@ const CategoryDropdown = ({ setCategory }) => {
 
   return (
     <Dropdown
-      placeholder="Select Category"
       fluid
       selection
       options={options}
+      defaultValue={defaultValue}
       onChange={(e, result) => {
         setSelected(result.value);
-        setCategory(result.value);
+        handleCategoryChange(result.value);
       }}
       value={selected}
     />

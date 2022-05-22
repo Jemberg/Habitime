@@ -1,10 +1,8 @@
-import axios from "axios";
 import Cookies from "js-cookie";
 import React, { useEffect, useState, Fragment, Section, Form } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 import { checkAuthentication } from "../../auth/auth";
-import Layout from "../layout";
 import Periodical from "./periodical";
 import EditPeriodicalModal from "./editPeriodicalModal";
 
@@ -40,7 +38,6 @@ const PeriodicalList = ({ filter }) => {
 
   const [item, setItem] = useState({
     name: "",
-    description: "",
   });
 
   const handleChange = (event) => {
@@ -56,11 +53,11 @@ const PeriodicalList = ({ filter }) => {
     }
 
     addPeriodical(item);
+    setItem(null);
   };
 
   const onCompleteSubmit = (id, completed) => {
     console.log(id, completed);
-    // document.getElementById(id).checked = !completed;
     const toastCompleted = completed ? "Completed" : "Uncompleted";
     toast.success(`Periodical has been ${toastCompleted}!`);
     editPeriodical(id, { completed: completed });
@@ -74,7 +71,6 @@ const PeriodicalList = ({ filter }) => {
     );
 
     var raw = JSON.stringify({
-      // user: checkAuthentication()._id,
       name: item.name,
     });
 
@@ -140,20 +136,17 @@ const PeriodicalList = ({ filter }) => {
   };
 
   const editPeriodical = async (id, item) => {
-    console.log(`Editing item with the ID of ${id}`);
-    console.log(item);
-
     var raw = JSON.stringify({
       name: item.name,
       description: item.description,
       completed: item.completed,
       category: item.category,
       priority: item.priority,
-      dueDate: item.dueDate,
-      frequency: item.frequency /* .toUTCString() */,
+      dueDate: item.dueDate /* .toUTCString() */,
+      frequency: item.frequency,
     });
 
-    console.log(raw);
+    //console.log(raw);
 
     var requestOptions = {
       method: "PATCH",
@@ -171,10 +164,6 @@ const PeriodicalList = ({ filter }) => {
         if (!parsed.success) {
           throw new Error(`There was an error: ${parsed.error}`);
         }
-
-        console.log(
-          `Periodical edited with name of: ${parsed.periodical.name}`
-        );
 
         // Delete periodical, then add updated periodical back in, this is not very efficient lol.
         setPeriodicalList((oldList) =>

@@ -26,23 +26,17 @@ const EditPeriodicalModal = (props) => {
   const [periodical, setPeriodical] = useState({});
 
   const handleChange = (event) => {
-    console.log(event.target.name, " ", event.target.value);
+    console.log("handleChange()", event.target.name, " ", event.target.value);
     setPeriodical({ ...periodical, [event.target.name]: event.target.value });
   };
 
-  const [category, setCategory] = useState("");
-
-  const handleCategoryChange = (event) => {
-    setPeriodical({ ...periodical, category: category });
-  };
-
-  const handleCategorySubmit = () => {
+  const handleCategoryChange = (category) => {
     setPeriodical({ ...periodical, category: category });
   };
 
   const handleFrequencyChange = (event, data) => {
     // event.preventDefault();
-    console.log(data.value);
+    console.log("handleFrequencyChange()", data.value);
     setPeriodical({ ...periodical, frequency: data.value });
   };
 
@@ -110,7 +104,10 @@ const EditPeriodicalModal = (props) => {
           {/* TODO: Category list must be imported via API. */}
           <div className="field">
             <label>Category (Currently ID: {props.itemProps.category})</label>
-            <CategoryDropdown setCategory={setCategory}></CategoryDropdown>
+            <CategoryDropdown
+              defaultValue={props.itemProps.category}
+              handleCategoryChange={handleCategoryChange}
+            ></CategoryDropdown>
           </div>
           <div className="field">
             <label>Frequency</label>
@@ -124,11 +121,11 @@ const EditPeriodicalModal = (props) => {
           </div>
           <button
             className="ui button green"
-            onClick={() => {
-              handleCategorySubmit();
+            onClick={(e) => {
+              e.preventDefault();
               // TODO: frequencyChange refreshes page on submission, have to fix.
               // TODO: category does not send to back-end.
-              console.log(category);
+              console.log("periodical: ", periodical);
               // setPeriodical({ ...periodical, category: category });
               props.editPeriodical(periodical);
               toast.success("Periodical has been edited!");

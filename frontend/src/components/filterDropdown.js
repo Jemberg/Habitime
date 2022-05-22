@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Dropdown } from "semantic-ui-react";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
 const FilterDropdown = ({ filter, setFilter }) => {
   // TODO: Make switch cases also feature categories so items can be filtered by category.
-  const filterOptions = [
+  const [filterOptions, setFilterOptions] = useState([
     {
       key: "All",
       text: "All",
@@ -42,7 +42,7 @@ const FilterDropdown = ({ filter, setFilter }) => {
       value: "lowPriority",
       label: { color: "light yellow", empty: true, circular: true },
     },
-  ];
+  ]);
 
   var myHeaders = new Headers();
   myHeaders.append("auth_token", Cookies.get("token"));
@@ -54,31 +54,33 @@ const FilterDropdown = ({ filter, setFilter }) => {
     redirect: "follow",
   };
 
-  fetch("http://localhost:3000/categories", requestOptions)
-    .then((response) => response.text())
-    .then((result) => {
-      const parsed = JSON.parse(result);
+  useEffect(() => {
+    fetch("http://localhost:3000/categories", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const parsed = JSON.parse(result);
 
-      if (!parsed.success) {
-        throw new Error(`There was an error: ${parsed.error}`);
-      }
+        if (!parsed.success) {
+          throw new Error(`There was an error: ${parsed.error}`);
+        }
 
-      const catOptions = parsed.categories.map((e) => {
-        return {
-          key: e._id,
-          text: e.name,
-          value: e._id,
-          label: { color: e.color, empty: true, circular: true },
-        };
+        const catOptions = parsed.categories.map((e) => {
+          return {
+            key: e._id,
+            text: e.name,
+            value: e._id,
+            label: { color: e.color, empty: true, circular: true },
+          };
+        });
+        setFilterOptions([...filterOptions, ...catOptions]);
+      })
+      .catch((error) => {
+        console.log("error", error);
+        toast.error(error.message);
       });
-      filterOptions.push(...catOptions);
-    })
-    .catch((error) => {
-      console.log("error", error);
-      toast.error(error.message);
-    });
+  }, []);
 
-  console.log(filterOptions);
+  console.log("filterOptions: ", filterOptions);
 
   return (
     <Dropdown
