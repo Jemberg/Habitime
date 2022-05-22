@@ -11,11 +11,7 @@ const Settings = () => {
   const [newCategory, setNewCategory] = useState({});
 
   const [confirmPass, setConfirmPass] = useState("");
-  const [credentials, setCredentials] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
+  const [credentials, setCredentials] = useState({});
 
   const handleConfirmPass = (event) => {
     setConfirmPass(event.target.value);
@@ -23,6 +19,7 @@ const Settings = () => {
 
   const handleChange = (event) => {
     setCredentials({ ...credentials, [event.target.name]: event.target.value });
+    console.log(credentials);
   };
 
   const handleSubmit = (event) => {
@@ -82,6 +79,39 @@ const Settings = () => {
         toast.error(error.message);
       });
   }, []);
+
+  const updateUser = async (credentials) => {
+    var raw = JSON.stringify({
+      username: credentials.username,
+      password: credentials.password,
+      email: credentials.email,
+    });
+
+    var requestOptions = {
+      method: "PATCH",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:3000/users/me", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(parsed);
+        const parsed = JSON.parse(result);
+
+        if (!parsed.success) {
+          throw new Error(`There was an error: ${parsed.error}`);
+        }
+
+        toast.success("User has been updated!");
+        setCredentials((oldList) => [...oldList, parsed.credentials]);
+      })
+      .catch((error) => {
+        console.log("error", error);
+        toast.error(error.message);
+      });
+  };
 
   const addCategory = async (category) => {
     var raw = JSON.stringify({
@@ -177,11 +207,11 @@ const Settings = () => {
                   <input
                     onChange={handleChange}
                     type="text"
-                    name="name"
+                    name="username"
                     placeholder={credentials.username}
                   />
                 </div>
-                <button className="ui button green" onClick={() => {}}>
+                <button className="ui button green" onClick={updateUser}>
                   Confirm New Username
                 </button>
               </form>
@@ -189,22 +219,21 @@ const Settings = () => {
               <h2 className="ui header">Change E-mail Address</h2>
               <form className="ui form">
                 <div className="field">
-                  <label>Old E-mail Address</label>
-                  <input
-                    onChange={handleChange}
-                    type="password"
-                    name="name"
-                    placeholder={credentials.email}
-                  />
                   <label>New E-mail Address</label>
                   <input
                     onChange={handleChange}
-                    type="password"
-                    name="name"
+                    type="email"
+                    name="email"
                     placeholder="Please enter a new email."
                   />
                 </div>
-                <button className="ui button green" onClick={() => {}}>
+                <button
+                  className="ui button green"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    updateUser(credentials);
+                  }}
+                >
                   Confirm New E-mail Address
                 </button>
               </form>
@@ -216,14 +245,14 @@ const Settings = () => {
                   <input
                     onChange={handleChange}
                     type="password"
-                    name="name"
+                    name="newPassword"
                     placeholder="Please enter new password."
                   />
                   <label>Confirm New Password</label>
                   <input
                     onChange={handleConfirmPass}
                     type="password"
-                    name="name"
+                    name="confirmPassword"
                     placeholder={"Please confirm new password."}
                   />
                 </div>
