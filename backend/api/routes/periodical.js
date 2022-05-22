@@ -11,20 +11,52 @@ const router = new express.Router();
 
 router.get("/periodical", auth, async (request, response) => {
   try {
-    const periodicals = await Periodical.find({ createdBy: request.user._id });
+    let periodicals = await Periodical.find({ createdBy: request.user._id });
 
-    periodicals.forEach((periodical) => {
-      if (
-        periodical.completed === true &&
-        periodical.nextDueDate < new Date()
-      ) {
-        Periodical.checkRecurring(periodical._id);
-        console.log("Completed task that needs to be reset, resetting...");
+    for (let periodical of periodicals) {
+      if (periodical.nextDueDate < new Date()) {
+        console.log("Task due date being set further and task is uncompleted.");
+        let newDueDate = moment().utc().toDate();
+        switch (periodical.frequency) {
+          case "Monthly":
+            newDueDate = moment()
+              .utc()
+              .startOf("month")
+              .add(1, "month")
+              .toDate();
+            break;
+          case "Weekly":
+            newDueDate = moment()
+              .utc()
+              .startOf("isoWeek")
+              .add(1, "week")
+              .toDate();
+            break;
+          case "Daily":
+            newDueDate = moment().utc().startOf("day").add(1, "day").toDate();
+            break;
+          default:
+            break;
+        }
+
+        await Periodical.findByIdAndUpdate(periodical.id, {
+          completed: false,
+          nextDueDate: newDueDate,
+        }).exec();
       }
-      console.log("Due: ", periodical.nextDueDate, "Now: ", new Date());
+    }
+
+    const checkedPeriodicals = await Periodical.find({
+      createdBy: request.user._id,
     });
 
-    response.status(200).send({ success: true, periodicals: periodicals });
+    checkedPeriodicals.forEach((periodical) =>
+      console.log("Periodicals sent to the front end:", periodical.nextDueDate)
+    );
+
+    response
+      .status(200)
+      .send({ success: true, periodicals: checkedPeriodicals });
   } catch (error) {
     console.log(error);
     response.status(500).send({ success: false, error: error.message });
@@ -114,8 +146,6 @@ router.patch("/periodical/:id", auth, async (request, response) => {
     user.save();
     console.log("doneRecurring:", user.doneRecurring);
   }
-
-  // console.log(request.body.nextDueDate);
 
   const isValid = requestedUpdates.every((update) => {
     return allowedUpdates.includes(update);

@@ -1,27 +1,59 @@
 const express = require("express");
+const moment = require("moment"); // require
+moment().format();
 
 const Habit = require("../models/habit");
+const User = require("../models/user");
 const auth = require("../middleware/auth");
 
 const router = new express.Router();
 
 router.get("/habits", auth, async (request, response) => {
   try {
-    const habits = await Habit.find({ createdBy: request.user._id });
+    let habits = await Habit.find({ createdBy: request.user._id });
 
-    // When requesting all habits, server checks if next repeat is today or before today.
-    // If so, reset completed to false, set next date to next day/week/month.
-    habits.forEach((habit) => {
-      console.log(habit.nextReset);
+    for (let habit of habits) {
       if (habit.nextReset < new Date()) {
-        console.log(
-          "nextReset is smaller than new date, resetting counter and setting date further"
-        );
-        console.log(habit.nextReset, new Date());
+        console.log("Task due date being set further and task is uncompleted.");
+        let nextReset = moment().utc().toDate();
+        switch (habit.resetFrequency) {
+          case "Monthly":
+            nextReset = moment()
+              .utc()
+              .startOf("month")
+              .add(1, "month")
+              .toDate();
+            break;
+          case "Weekly":
+            nextReset = moment()
+              .utc()
+              .startOf("isoWeek")
+              .add(1, "week")
+              .toDate();
+            break;
+          case "Daily":
+            nextReset = moment().utc().startOf("day").add(1, "day").toDate();
+            break;
+          default:
+            break;
+        }
+
+        await Habit.findByIdAndUpdate(habit.id, {
+          counter: 0,
+          nextReset: nextReset,
+        }).exec();
       }
+    }
+
+    const checkedHabits = await Habit.find({
+      createdBy: request.user._id,
     });
 
-    response.status(200).send({ success: true, habits: habits });
+    checkedHabits.forEach((habit) =>
+      console.log("Habits sent to the front end:", habit.nextReset)
+    );
+
+    response.status(200).send({ success: true, habits: checkedHabits });
   } catch (error) {
     console.log(error);
     response.status(500).send({ success: false, error: error.message });
@@ -74,7 +106,34 @@ router.patch("/habits/:id", auth, async (request, response) => {
     "counter",
     "goal",
     "resetFrequency",
+    "nextReset",
   ];
+
+  switch (request.body.resetFrequency) {
+    case "Monthly":
+      request.body.nextReset = moment()
+        .utc()
+        .startOf("month")
+        .add(1, "month")
+        .toDate();
+      break;
+    case "Weekly":
+      request.body.nextReset = moment()
+        .utc()
+        .startOf("isoWeek")
+        .add(1, "week")
+        .toDate();
+      break;
+    case "Daily":
+      request.body.nextReset = moment()
+        .utc()
+        .startOf("day")
+        .add(1, "day")
+        .toDate();
+      break;
+    default:
+      break;
+  }
 
   console.log(request.body);
 
@@ -92,10 +151,24 @@ router.patch("/habits/:id", auth, async (request, response) => {
       createdBy: request.user._id,
     });
 
+    if (request.body.counter === habit.goal) {
+      const user = await User.findById(request.user._id);
+
+      user.doneHabits++;
+      user.save();
+      console.log("doneHabits:", user.doneHabits);
+    }
+
     if (!habit) {
       return response
         .status(404)
         .send({ success: false, error: "Habit not found." });
+    }
+
+    if (request.body.nextReset) {
+      console.log(request.body.nextReset);
+      habit["nextReset"] = request.body.nextReset;
+      await habit.save();
     }
 
     requestedUpdates.forEach((update) => {

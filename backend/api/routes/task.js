@@ -88,7 +88,13 @@ router.patch("/tasks/:id", auth, async (req, res) => {
     "priority",
   ];
 
-  console.log(req.body);
+  if (req.body.completed) {
+    const user = await User.findById(req.user._id);
+
+    user.doneTasks++;
+    user.save();
+    console.log("doneTasks:", user.doneTasks);
+  }
 
   const isValid = requestedUpdates.every((update) => {
     return allowedUpdates.includes(update);

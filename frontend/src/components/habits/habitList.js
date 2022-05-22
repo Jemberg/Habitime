@@ -136,6 +136,7 @@ const HabitList = ({ filter }) => {
       counter: item.counter,
       priority: item.priority,
       goal: item.goal,
+      resetFrequency: item.resetFrequency,
     });
 
     console.log(raw);

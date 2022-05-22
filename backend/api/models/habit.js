@@ -26,7 +26,6 @@ const habitSchema = new mongoose.Schema({
   },
   counter: {
     type: Number,
-    required: true,
     default: 0,
   },
   goal: {
