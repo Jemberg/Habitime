@@ -13,7 +13,6 @@ const TaskList = ({ filter }) => {
 
   const [item, setItem] = useState({
     name: "",
-    description: "",
   });
 
   useEffect(() => {
@@ -23,7 +22,7 @@ const TaskList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/tasks", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/tasks`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -82,7 +81,7 @@ const TaskList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/tasks", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/tasks`, requestOptions)
       .then((response) => response.text())
 
       .then((result) => {
@@ -95,6 +94,7 @@ const TaskList = ({ filter }) => {
 
         toast.success("Task has been created!");
         setTaskList((oldList) => [...oldList, parsed.task]);
+        setItem({});
       })
       .catch((error) => {
         console.log("error", error);
@@ -111,7 +111,7 @@ const TaskList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3000/tasks/${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/tasks/${id}`, requestOptions)
       .then((response) => response.text())
 
       .then((result) => {
@@ -153,7 +153,7 @@ const TaskList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3000/tasks/${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/tasks/${id}`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(result);

@@ -61,7 +61,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/categories", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/categories`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -93,7 +93,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/users/me", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/users/me`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -125,7 +125,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/categories", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/categories`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -151,7 +151,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3000/categories/${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/tasks/${id}`, requestOptions)
       .then((response) => response.text())
 
       .then((result) => {

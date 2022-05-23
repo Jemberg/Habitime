@@ -20,7 +20,7 @@ const HabitList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/habits", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/habits`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -40,7 +40,6 @@ const HabitList = ({ filter }) => {
 
   const [item, setItem] = useState({
     name: "",
-    description: "",
   });
 
   const handleChange = (event) => {
@@ -77,7 +76,7 @@ const HabitList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/habits", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/habits`, requestOptions)
       .then((response) => response.text())
 
       .then((result) => {
@@ -90,6 +89,7 @@ const HabitList = ({ filter }) => {
 
         toast.success("Habit has been created!");
         setHabitList((oldList) => [...oldList, parsed.habit]);
+        setItem({});
       })
       .catch((error) => {
         console.log("error", error);
@@ -106,7 +106,7 @@ const HabitList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3000/habits/${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/habits/${id}`, requestOptions)
       .then((response) => response.text())
 
       .then((result) => {
@@ -148,7 +148,7 @@ const HabitList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3000/habits/${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/habits/${id}`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(result);

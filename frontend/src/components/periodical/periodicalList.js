@@ -18,7 +18,7 @@ const PeriodicalList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/periodical", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/periodical`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -53,7 +53,6 @@ const PeriodicalList = ({ filter }) => {
     }
 
     addPeriodical(item);
-    setItem(null);
   };
 
   const onCompleteSubmit = (id, completed) => {
@@ -83,7 +82,7 @@ const PeriodicalList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/periodical", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/periodical`, requestOptions)
       .then((response) => response.text())
 
       .then((result) => {
@@ -96,6 +95,7 @@ const PeriodicalList = ({ filter }) => {
 
         toast.success("Periodical has been created!");
         setPeriodicalList((oldList) => [...oldList, parsed.periodical]);
+        setItem({});
       })
       .catch((error) => {
         console.log("error", error);
@@ -112,7 +112,7 @@ const PeriodicalList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3000/periodical/${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/periodical/${id}`, requestOptions)
       .then((response) => response.text())
 
       .then((result) => {
@@ -155,7 +155,7 @@ const PeriodicalList = ({ filter }) => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3000/periodical/${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/periodical/${id}`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(result);

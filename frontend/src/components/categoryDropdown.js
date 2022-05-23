@@ -19,7 +19,7 @@ const CategoryDropdown = ({ handleCategoryChange, defaultValue }) => {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/categories", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/categories`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
