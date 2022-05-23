@@ -1,3 +1,4 @@
+require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const validator = require("validator");
@@ -108,7 +109,7 @@ userSchema.methods.toJSON = function () {
 
 userSchema.methods.generateAuthToken = async function () {
   // TODO: Hide secret in .env file that does not get pushed to Github.
-  const token = jwt.sign({ _id: this._id.toString() }, "thisIsASecretMessage");
+  const token = jwt.sign({ _id: this._id.toString() }, process.env.JWT_SECRET);
 
   this.tokens = this.tokens.concat({
     token: token,

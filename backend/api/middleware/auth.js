@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+require("dotenv").config();
 
 const auth = async (req, res, next) => {
   try {
@@ -7,7 +8,7 @@ const auth = async (req, res, next) => {
 
     const verification = jwt.verify(
       token,
-      "thisIsASecretMessage"
+      process.env.JWT_SECRET
     ); /* TODO: Change secret. */
 
     if (verification) {
