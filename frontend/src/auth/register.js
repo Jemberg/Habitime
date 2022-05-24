@@ -56,7 +56,7 @@ const Register = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/users/", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/users`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);

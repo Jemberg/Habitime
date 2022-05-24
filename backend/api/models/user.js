@@ -80,24 +80,6 @@ const userSchema = new mongoose.Schema({
   // TODO: If enough time is left, implement isAdmin with admin panel.
 });
 
-userSchema.virtual("tasks", {
-  ref: "task",
-  localField: "_id",
-  foreignField: "createdBy",
-});
-
-userSchema.virtual("habits", {
-  ref: "habit",
-  localField: "_id",
-  foreignField: "createdBy",
-});
-
-userSchema.virtual("periodical", {
-  ref: "periodical",
-  localField: "_id",
-  foreignField: "createdBy",
-});
-
 userSchema.methods.toJSON = function () {
   const sanitizedOutput = this.toObject();
 

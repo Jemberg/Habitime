@@ -37,7 +37,7 @@ const Login = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/users/login", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/users/login`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
