@@ -28,7 +28,7 @@ const FilterDropdown = ({ filter, setFilter }) => {
       key: "highPriority",
       text: "High Priority",
       value: "highPriority",
-      label: { color: "dark red", empty: true, circular: true },
+      label: { color: "grey", empty: true, circular: true },
     },
     {
       key: "mediumPriority",
@@ -40,7 +40,7 @@ const FilterDropdown = ({ filter, setFilter }) => {
       key: "lowPriority",
       text: "Low Priority",
       value: "lowPriority",
-      label: { color: "light yellow", empty: true, circular: true },
+      label: { color: "violet", empty: true, circular: true },
     },
   ]);
 
@@ -69,7 +69,7 @@ const FilterDropdown = ({ filter, setFilter }) => {
             key: e._id,
             text: e.name,
             value: e._id,
-            label: { color: e.color, empty: true, circular: true },
+            label: { color: "black", empty: true, circular: true },
           };
         });
         setFilterOptions([...filterOptions, ...catOptions]);

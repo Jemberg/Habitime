@@ -1,10 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Navigate, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
-import { checkAuthentication } from "../auth/auth";
+import { checkAuthentication, logOut } from "../auth/auth";
 import Layout from "../components/layout";
-import Cookies from "js-cookie";
+import Cookie from "js-cookie";
 
 const Settings = () => {
   const [categoryList, setCategoryList] = useState({});
@@ -12,6 +12,8 @@ const Settings = () => {
 
   const [confirmPass, setConfirmPass] = useState("");
   const [credentials, setCredentials] = useState({});
+
+  let navigate = useNavigate();
 
   const handleConfirmPass = (event) => {
     setConfirmPass(event.target.value);
@@ -22,17 +24,21 @@ const Settings = () => {
     console.log(credentials);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = () => {
+    setCredentials({
+      username: "",
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+  };
 
+  const handlePasswordChange = (credentials) => {
     // Checks if password matches confirmPassword.
     if (credentials.password !== confirmPass) {
-      setCredentials({
-        username: "",
-        email: "",
-        password: "",
-      });
-      setConfirmPass("");
+      setCredentials({});
+      console.log("confirmPass", confirmPass);
       toast.error("Passwords did not match, please try again.");
     }
   };
@@ -42,16 +48,19 @@ const Settings = () => {
   const handleCategoryChange = (event) => {
     console.log(event.target.name, " ", event.target.value);
     setNewCategory({ ...newCategory, [event.target.name]: event.target.value });
+    console.log("newCategory: ", newCategory);
   };
 
   const handleCategorySubmit = (event) => {
     event.preventDefault();
 
     addCategory(newCategory);
+
+    setNewCategory({ name: "" });
   };
 
   var myHeaders = new Headers();
-  myHeaders.append("auth_token", Cookies.get("token"));
+  myHeaders.append("auth_token", Cookie.get("token"));
   myHeaders.append("Content-Type", "application/json");
 
   useEffect(() => {
@@ -61,7 +70,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch(`${process.env.REACT_APP_API_URL}/categories`, requestOptions)
+    fetch("http://localhost:3000/categories", requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -93,7 +102,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch(`${process.env.REACT_APP_API_URL}/users/me`, requestOptions)
+    fetch("http://localhost:3000/users/me", requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -125,7 +134,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch(`${process.env.REACT_APP_API_URL}/categories`, requestOptions)
+    fetch("http://localhost:3000/categories", requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -135,7 +144,7 @@ const Settings = () => {
           throw new Error(`There was an error: ${parsed.error}`);
         }
 
-        toast.success("Task has been created!");
+        toast.success("Category has been created!");
         setCategoryList((oldList) => [...oldList, parsed.category]);
       })
       .catch((error) => {
@@ -151,7 +160,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch(`${process.env.REACT_APP_API_URL}/tasks/${id}`, requestOptions)
+    fetch(`http://localhost:3000/categories/${id}`, requestOptions)
       .then((response) => response.text())
 
       .then((result) => {
@@ -167,6 +176,67 @@ const Settings = () => {
       })
       .catch((error) => {
         console.log("error", error);
+      });
+  };
+
+  const deleteAccount = async (id) => {
+    var requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `http://localhost:3000/users/me?auth_token={{auth_token}}`,
+      requestOptions
+    )
+      .then((response) => response.text())
+
+      .then((result) => {
+        const parsed = JSON.parse(result);
+
+        if (!parsed.success) {
+          throw new Error(`There was an error: ${parsed.error}`);
+        }
+
+        toast.success("User has been deleted!");
+        console.log(`User deleted with name of: ${parsed.user.username}`);
+        setCategoryList((oldList) => oldList.filter((item) => item._id !== id));
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
+
+  const logOutAll = async () => {
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:3000/users/logoutAll", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const parsed = JSON.parse(result);
+
+        if (!parsed.success) {
+          throw new Error(`There was an error: ${parsed.error}`);
+        }
+
+        toast.success("Logout Successful!");
+        console.log(
+          `User with name of: ${
+            checkAuthentication().username
+          } has been logged out`
+        );
+        Cookie.remove("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.log("error", error);
+        toast.error(error.message);
       });
   };
 
@@ -207,7 +277,8 @@ const Settings = () => {
                     onChange={handleChange}
                     type="text"
                     name="username"
-                    placeholder={credentials.username}
+                    value={credentials.username}
+                    placeholder="Please enter a new username"
                   />
                 </div>
                 <button
@@ -215,6 +286,7 @@ const Settings = () => {
                   onClick={(e) => {
                     e.preventDefault();
                     updateUser(credentials);
+                    handleSubmit();
                   }}
                 >
                   Confirm New Username
@@ -229,7 +301,8 @@ const Settings = () => {
                     onChange={handleChange}
                     type="email"
                     name="email"
-                    placeholder="Please enter a new email."
+                    value={credentials.email}
+                    placeholder="Please enter a new email"
                   />
                 </div>
                 <button
@@ -237,6 +310,7 @@ const Settings = () => {
                   onClick={(e) => {
                     e.preventDefault();
                     updateUser(credentials);
+                    handleSubmit();
                   }}
                 >
                   Confirm New E-mail Address
@@ -250,22 +324,26 @@ const Settings = () => {
                   <input
                     onChange={handleChange}
                     type="password"
-                    name="newPassword"
-                    placeholder="Please enter new password."
+                    name="password"
+                    value={credentials.password}
+                    placeholder="Please enter new password"
                   />
                   <label>Confirm New Password</label>
                   <input
                     onChange={handleConfirmPass}
                     type="password"
                     name="confirmPassword"
-                    placeholder={"Please confirm new password."}
+                    value={credentials.confirmPassword}
+                    placeholder="Please confirm new password"
                   />
                 </div>
                 <button
                   className="ui button green"
                   onClick={(e) => {
                     e.preventDefault();
+                    handlePasswordChange(credentials);
                     updateUser(credentials);
+                    handleSubmit();
                   }}
                 >
                   Confirm New Password
@@ -281,6 +359,7 @@ const Settings = () => {
                     onChange={handleCategoryChange}
                     type="text"
                     name="name"
+                    value={newCategory.name}
                     placeholder="University"
                   />
                 </div>
@@ -297,12 +376,26 @@ const Settings = () => {
             <div className="column">
               <h2 className="ui header">Account Options</h2>
               <div className="field"></div>
-              <button className="ui button red" onClick={() => {}}>
+              <button
+                className="ui button red"
+                onClick={() => {
+                  deleteAccount();
+                  logOut(() => {
+                    navigate("/login");
+                  });
+                }}
+              >
                 Delete Account
               </button>
-              <button className="ui button red" onClick={() => {}}>
+              <button
+                className="ui button red"
+                onClick={() => {
+                  logOutAll();
+                }}
+              >
                 Log Out All Devices
               </button>
+              <ToastContainer />
             </div>
           </div>
         </div>

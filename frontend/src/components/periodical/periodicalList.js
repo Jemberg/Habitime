@@ -95,7 +95,6 @@ const PeriodicalList = ({ filter }) => {
 
         toast.success("Periodical has been created!");
         setPeriodicalList((oldList) => [...oldList, parsed.periodical]);
-        setItem({});
       })
       .catch((error) => {
         console.log("error", error);
@@ -207,8 +206,30 @@ const PeriodicalList = ({ filter }) => {
         <div style={{ margin: "0px" }} className="ui segment">
           <div className="ui grid container stackable equal width">
             <div className="row">
-              <div className="column left aligned">
+              <div className="column left aligned eight wide">
                 <Periodical key={periodical._id} item={periodical}></Periodical>
+              </div>
+
+              <div className="column four wide" style={{ padding: "10px" }}>
+                <div>
+                  <div
+                    style={{ transform: "scale(2)" }}
+                    className="ui fitted checkbox"
+                  >
+                    <input
+                      id={periodical._id}
+                      checked={periodical.completed}
+                      onChange={() => {}}
+                      onClick={() => {
+                        onCompleteSubmit(periodical._id, !periodical.completed);
+                      }}
+                      type="checkbox"
+                    />
+                    <label></label>
+                  </div>
+                </div>
+              </div>
+              <div className="column four wide">
                 <EditPeriodicalModal
                   removePeriodical={() => removePeriodical(periodical._id)}
                   editPeriodical={(updatedItem) =>
@@ -216,24 +237,6 @@ const PeriodicalList = ({ filter }) => {
                   }
                   itemProps={periodical}
                 ></EditPeriodicalModal>
-              </div>
-
-              <div className="column right aligned three wide">
-                <div
-                  style={{ transform: "scale(2)" }}
-                  className="ui fitted checkbox"
-                >
-                  <input
-                    id={periodical._id}
-                    checked={periodical.completed}
-                    onChange={() => {}}
-                    onClick={() => {
-                      onCompleteSubmit(periodical._id, !periodical.completed);
-                    }}
-                    type="checkbox"
-                  />
-                  <label></label>
-                </div>
               </div>
             </div>
           </div>

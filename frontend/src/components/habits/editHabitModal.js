@@ -63,7 +63,7 @@ const EditHabitModal = (props) => {
 
   return (
     <div>
-      <button className="circular ui button" onClick={openModal}>
+      <button className="right floated ui button" onClick={openModal}>
         <i style={{ margin: "0px" }} className="cog icon"></i>
       </button>
       <Modal

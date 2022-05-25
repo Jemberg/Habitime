@@ -89,7 +89,6 @@ const HabitList = ({ filter }) => {
 
         toast.success("Habit has been created!");
         setHabitList((oldList) => [...oldList, parsed.habit]);
-        setItem({});
       })
       .catch((error) => {
         console.log("error", error);
@@ -208,40 +207,41 @@ const HabitList = ({ filter }) => {
         <div style={{ margin: "0px" }} className="ui segment">
           <div className="ui grid container stackable equal width">
             <div className="row">
-              <div className="left aligned nine wide column">
+              <div className="left aligned eight wide column">
                 <Habit key={habit._id} item={habit}></Habit>
-                <EditHabitModal
-                  removeHabit={() => removeHabit(habit._id)}
-                  editHabit={(updatedItem) => editHabit(habit._id, updatedItem)}
-                  itemProps={habit}
-                ></EditHabitModal>
               </div>
 
-              <div className="column seven wide">
+              <div className="column four wide">
+                <button
+                  onClick={() => {
+                    onPositiveHabit(habit);
+                  }}
+                  className="right floated ui button"
+                >
+                  <i style={{ margin: "0px" }} className="plus circle icon"></i>
+                </button>
+                <button
+                  onClick={() => {
+                    onNegativeHabit(habit);
+                  }}
+                  className="right floated ui button"
+                >
+                  <i
+                    style={{ margin: "0px" }}
+                    className="minus circle icon"
+                  ></i>
+                </button>
+                <label></label>
+              </div>
+              <div className="column four wide">
                 <div style={{ transform: "" }}>
-                  <button
-                    onClick={() => {
-                      onPositiveHabit(habit);
-                    }}
-                    className="ui button"
-                  >
-                    <i
-                      style={{ margin: "0px" }}
-                      className="plus circle icon"
-                    ></i>
-                  </button>
-                  <button
-                    onClick={() => {
-                      onNegativeHabit(habit);
-                    }}
-                    className="ui button"
-                  >
-                    <i
-                      style={{ margin: "0px" }}
-                      className="minus circle icon"
-                    ></i>
-                  </button>
-                  <label></label>
+                  <EditHabitModal
+                    removeHabit={() => removeHabit(habit._id)}
+                    editHabit={(updatedItem) =>
+                      editHabit(habit._id, updatedItem)
+                    }
+                    itemProps={habit}
+                  ></EditHabitModal>
                 </div>
               </div>
             </div>

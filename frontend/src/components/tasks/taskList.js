@@ -94,7 +94,6 @@ const TaskList = ({ filter }) => {
 
         toast.success("Task has been created!");
         setTaskList((oldList) => [...oldList, parsed.task]);
-        setItem({});
       })
       .catch((error) => {
         console.log("error", error);
@@ -205,31 +204,35 @@ const TaskList = ({ filter }) => {
         <div style={{ margin: "0px" }} className="ui segment">
           <div className="ui grid container stackable equal width">
             <div className="row">
-              <div className="column left aligned">
+              <div className="column left aligned eight wide">
                 <Task key={task._id} item={task}></Task>
+              </div>
+
+              <div className="column four wide" style={{ padding: "10px" }}>
+                <div>
+                  <div
+                    style={{ transform: "scale(2)" }}
+                    className="ui fitted checkbox"
+                  >
+                    <input
+                      id={task._id}
+                      checked={task.completed}
+                      onChange={() => {}}
+                      onClick={() => {
+                        onCompleteSubmit(task._id, !task.completed);
+                      }}
+                      type="checkbox"
+                    />
+                    <label></label>
+                  </div>
+                </div>
+              </div>
+              <div className="column four wide">
                 <EditTaskModal
                   removeTask={() => removeTask(task._id)}
                   editTask={(updatedItem) => editTask(task._id, updatedItem)}
                   itemProps={task}
                 ></EditTaskModal>
-              </div>
-
-              <div className="column right aligned three wide">
-                <div
-                  style={{ transform: "scale(2)" }}
-                  className="ui fitted checkbox"
-                >
-                  <input
-                    id={task._id}
-                    checked={task.completed}
-                    onChange={() => {}}
-                    onClick={() => {
-                      onCompleteSubmit(task._id, !task.completed);
-                    }}
-                    type="checkbox"
-                  />
-                  <label></label>
-                </div>
               </div>
             </div>
           </div>
