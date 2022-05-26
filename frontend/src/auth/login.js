@@ -11,12 +11,13 @@ import Logo from "../assets/logo_transparent.png";
 // TODO: Remove transparent border for the form.
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
   const handleChange = (event) => {
     setCredentials({ ...credentials, [event.target.name]: event.target.value });
+    console.log(credentials);
   };
 
   const handleSubmit = (event) => {
@@ -26,7 +27,7 @@ const Login = () => {
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify({
-      email: credentials.email,
+      username: credentials.username,
       password: credentials.password,
     });
 
@@ -45,14 +46,15 @@ const Login = () => {
         if (!parsed.success) {
           throw new Error(`There was an error: ${parsed.error}`);
         }
+        console.log(credentials);
         authenticate(parsed, () => {
-          setCredentials({ password: "", email: "" });
+          setCredentials({ password: "", username: "" });
         });
       })
       .catch((error) => {
         console.log("error", error);
         toast.error(error.message);
-        setCredentials({ password: "", email: "" });
+        setCredentials({ password: "", username: "" });
       });
   };
 
@@ -86,16 +88,16 @@ const Login = () => {
                   <div className="ui equal width center aligned grid">
                     <div className="row">
                       <div className="column field left aligned">
-                        <label style={{ color: "white" }}>Email</label>
+                        <label style={{ color: "white" }}>Username</label>
                       </div>
                     </div>
                   </div>
                   <input
                     type="text"
-                    name="email"
-                    value={credentials.email}
+                    name="username"
+                    value={credentials.username}
                     onChange={handleChange}
-                    placeholder="Enter your email"
+                    placeholder="Enter your username"
                   />
                 </div>
                 <div className="field">
@@ -103,12 +105,6 @@ const Login = () => {
                     <div className="row">
                       <div className="column field left aligned">
                         <label style={{ color: "white" }}>Password</label>
-                      </div>
-                      <div className="column field right aligned">
-                        <div className="field">
-                          {/* Currently redirects to register cause no password reset is possible. */}
-                          <Link to="/register">Forgot password?</Link>
-                        </div>
                       </div>
                     </div>
                   </div>

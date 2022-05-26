@@ -62,7 +62,7 @@ const Register = () => {
         const parsed = JSON.parse(result);
 
         if (!parsed.success) {
-          throw new Error(`Error: ${parsed.error}`);
+          throw new Error(`There was an error: ${parsed.error}`);
         }
 
         authenticate(parsed, () => {

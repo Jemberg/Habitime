@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -55,14 +56,17 @@ const userSchema = new mongoose.Schema({
   doneTasks: {
     type: Number,
     default: 0,
+    min: 0,
   },
   doneRecurring: {
     type: Number,
     default: 0,
+    min: 0,
   },
   doneHabits: {
     type: Number,
     default: 0,
+    min: 0,
   },
   // TODO: Add custom start day that all tasks start on and count day/week/month from for habits/recurring tasks.
   isNotified: {
@@ -102,17 +106,17 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-userSchema.statics.findByCredentials = async (email, password) => {
-  const user = await User.findOne({ email: email });
+userSchema.statics.findByCredentials = async (username, password) => {
+  const user = await User.findOne({ username: username });
 
   if (!user) {
-    throw new Error("Unable to login, no user has been found.");
+    throw new Error("Login details invalid.");
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    throw new Error("Unable to login, password did not match.");
+    throw new Error("Login details invalid.");
   }
 
   return user;

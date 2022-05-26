@@ -103,7 +103,7 @@ const EditPeriodicalModal = (props) => {
           </div>
           {/* TODO: Category list must be imported via API. */}
           <div className="field">
-            <label>Category (Currently ID: {props.itemProps.category})</label>
+            <label>Category</label>
             <CategoryDropdown
               defaultValue={props.itemProps.category}
               handleCategoryChange={handleCategoryChange}

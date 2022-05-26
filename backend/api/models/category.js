@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const Task = require("./task");
+const Habit = require("./habit");
+const Periodical = require("./periodical");
 
 const categorySchema = new mongoose.Schema({
   createdBy: {
@@ -10,6 +13,7 @@ const categorySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    trim: true,
   },
   color: {
     type: String,
@@ -29,6 +33,11 @@ categorySchema.pre("remove", async function (next) {
   // Removes deleted category from all tasks that have it.
   // TODO: Add habits and periodical tasks as well.
   await Task.updateMany({ category: category.name }, { category: undefined });
+  await Habit.updateMany({ category: category.name }, { category: undefined });
+  await Periodical.updateMany(
+    { category: category.name },
+    { category: undefined }
+  );
 
   next();
 });

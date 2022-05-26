@@ -33,7 +33,7 @@ const CategoryDropdown = ({ handleCategoryChange, defaultValue }) => {
             key: e._id,
             text: e.name,
             value: e._id,
-            label: { color: e.color, empty: true, circular: true },
+            label: { color: "black", empty: true, circular: true },
           };
         });
         setOptions(catOptions);

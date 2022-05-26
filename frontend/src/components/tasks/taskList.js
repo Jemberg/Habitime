@@ -53,6 +53,7 @@ const TaskList = ({ filter }) => {
     }
 
     addTask(item);
+    setItem({ name: "" });
   };
 
   const onCompleteSubmit = (id, completed) => {

@@ -55,6 +55,7 @@ const HabitList = ({ filter }) => {
     }
 
     addHabit(item);
+    setItem({ name: "" });
   };
 
   const [habitList, setHabitList] = useState([]);

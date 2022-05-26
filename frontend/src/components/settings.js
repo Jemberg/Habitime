@@ -70,7 +70,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/categories", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/categories`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -102,17 +102,17 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/users/me", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/users/me`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
-        localStorage.setItem("user", JSON.stringify(parsed.user));
 
         if (!parsed.success) {
           throw new Error(`There was an error: ${parsed.error}`);
         }
 
         toast.success("User has been updated!");
+        localStorage.setItem("user", JSON.stringify(parsed.user));
         setCredentials((oldList) => [parsed.credentials]);
       })
       .catch((error) => {
@@ -134,7 +134,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/categories", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/categories`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -160,7 +160,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3000/categories/${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/categories/${id}`, requestOptions)
       .then((response) => response.text())
 
       .then((result) => {
@@ -179,17 +179,15 @@ const Settings = () => {
       });
   };
 
-  const deleteAccount = async (id) => {
+  const deleteAccount = async () => {
     var requestOptions = {
       method: "DELETE",
       headers: myHeaders,
       redirect: "follow",
     };
 
-    fetch(
-      `http://localhost:3000/users/me?auth_token={{auth_token}}`,
-      requestOptions
-    )
+    // TODO: Check if works.
+    fetch(`${process.env.REACT_APP_API_URL}/users/me`, requestOptions)
       .then((response) => response.text())
 
       .then((result) => {
@@ -201,7 +199,6 @@ const Settings = () => {
 
         toast.success("User has been deleted!");
         console.log(`User deleted with name of: ${parsed.user.username}`);
-        setCategoryList((oldList) => oldList.filter((item) => item._id !== id));
       })
       .catch((error) => {
         console.log("error", error);
@@ -215,7 +212,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3000/users/logoutAll", requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/users/logoutAll`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const parsed = JSON.parse(result);
@@ -224,7 +221,7 @@ const Settings = () => {
           throw new Error(`There was an error: ${parsed.error}`);
         }
 
-        toast.success("Logout Successful!");
+        toast.success("All devices successfully logged out!");
         console.log(
           `User with name of: ${
             checkAuthentication().username
@@ -353,8 +350,8 @@ const Settings = () => {
             <div className="column">
               <h2 className="ui header">Category Options</h2>
               <form className="ui form" action="">
-                <label>Add New Category</label>
                 <div className="field">
+                  <label>Add New Category</label>
                   <input
                     onChange={handleCategoryChange}
                     type="text"

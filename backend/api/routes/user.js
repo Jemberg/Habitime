@@ -14,8 +14,20 @@ router.post("/users", async (req, res) => {
   const user = new User(req.body);
 
   try {
+    const usernameCheck = await User.findOne({ username: req.body.username });
+    const mailCheck = await User.findOne({ email: req.body.email });
+
+    if (usernameCheck) {
+      throw new Error("Username already exists.");
+    }
+
+    if (mailCheck) {
+      throw new Error("Email already exists.");
+    }
+
     await user.save();
     const token = await user.generateAuthToken();
+    const value = req.body.value;
 
     res.status(201).send({ success: true, user: user, token: token });
   } catch (error) {
@@ -26,7 +38,7 @@ router.post("/users", async (req, res) => {
 router.post("/users/login", async (req, res) => {
   try {
     const user = await User.findByCredentials(
-      req.body.email,
+      req.body.username,
       req.body.password
     );
 
@@ -81,15 +93,30 @@ router.patch("/users/me", auth, async (req, res) => {
   });
 
   if (!isValidOperation) {
-    return res.status(400).send({ success: false, error: "Invalid updates." });
+    return res
+      .status(400)
+      .send({ success: false, error: "At least one update is invalid." });
   }
 
   try {
+    const usernameCheck = await User.findOne({ username: req.body.username });
+    const mailCheck = await User.findOne({ email: req.body.email });
+
+    if (usernameCheck) {
+      throw new Error("Username already exists.");
+    }
+
+    if (mailCheck) {
+      throw new Error("Email already exists.");
+    }
+
     const user = await User.findById(req.user._id);
 
     updates.forEach((update) => {
       user[update] = req.body[update];
     });
+
+    user.updatedIn = Date.now();
 
     await user.save();
 

@@ -53,6 +53,7 @@ const PeriodicalList = ({ filter }) => {
     }
 
     addPeriodical(item);
+    setItem({ name: "" });
   };
 
   const onCompleteSubmit = (id, completed) => {
@@ -254,8 +255,8 @@ const PeriodicalList = ({ filter }) => {
               <div className="fluid ui input">
                 <input
                   type="text"
-                  value={item.name}
                   name="name"
+                  value={item.name}
                   onChange={handleChange}
                 />
               </div>
