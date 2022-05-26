@@ -1,4 +1,3 @@
-import axios from "axios";
 import Cookies from "js-cookie";
 import React, { useEffect, useState, Fragment, Section, Form } from "react";
 import { toast, ToastContainer } from "react-toastify";

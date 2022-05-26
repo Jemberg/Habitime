@@ -13,8 +13,8 @@ const App = () => {
 
   return (
     <Layout>
+      {!checkAuthentication() ? <Navigate to="/login" /> : null};
       <Fragment>
-        {!checkAuthentication() ? <Navigate to="/login" /> : null};
         <div className="ui grid container stackable equal width center aligned">
           <div className="row">
             <FilterDropdown
