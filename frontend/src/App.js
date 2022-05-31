@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 import { checkAuthentication } from "./auth/auth";
 import Layout from "./components/layout";
@@ -12,31 +13,41 @@ const App = () => {
   const [filter, setFilter] = useState("All");
 
   return (
-    <Layout>
-      {!checkAuthentication() ? <Navigate to="/login" /> : null};
-      <Fragment>
-        <div className="ui grid container stackable equal width center aligned">
-          <div className="row">
-            <FilterDropdown
-              filter={filter}
-              setFilter={setFilter}
-            ></FilterDropdown>
-          </div>
-
-          <div className="row">
-            <div className="column">
-              <TaskList filter={filter}></TaskList>
+    <Fragment>
+      {checkAuthentication() && (
+        <Layout>
+          <Fragment>
+            <div className="ui grid container stackable equal width center aligned">
+              <div className="row">
+                <div className="column">
+                  <h1>Filter</h1>
+                  <FilterDropdown
+                    filter={filter}
+                    setFilter={setFilter}
+                  ></FilterDropdown>
+                </div>
+              </div>
+              <div className="row">
+                <div className="column">
+                  <h1>Tasks</h1>
+                  <TaskList filter={filter}></TaskList>
+                </div>
+                <div className="column">
+                  <h1>Habits</h1>
+                  <HabitList filter={filter}></HabitList>
+                </div>
+                <div className="column">
+                  <h1>Periodical Tasks</h1>
+                  <PeriodicalList filter={filter}></PeriodicalList>
+                </div>
+              </div>
             </div>
-            <div className="column">
-              <HabitList filter={filter}></HabitList>
-            </div>
-            <div className="column">
-              <PeriodicalList filter={filter}></PeriodicalList>
-            </div>
-          </div>
-        </div>
-      </Fragment>
-    </Layout>
+          </Fragment>
+          <ToastContainer />
+        </Layout>
+      )}
+      {!checkAuthentication() && <Navigate to="/login" />}
+    </Fragment>
   );
 };
 

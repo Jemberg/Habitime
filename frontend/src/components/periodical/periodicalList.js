@@ -207,33 +207,34 @@ const PeriodicalList = ({ filter }) => {
         <div style={{ margin: "0px" }} className="ui segment">
           <div className="ui grid container stackable equal width">
             <div className="row">
-              <div className="column left aligned eight wide">
+              <div className="column left aligned">
                 <Periodical key={periodical._id} item={periodical}></Periodical>
               </div>
-
-              <div className="column four wide" style={{ padding: "10px" }}>
-                <div>
-                  <div
-                    style={{ transform: "scale(2)" }}
-                    className="ui fitted checkbox"
-                  >
-                    <input
-                      id={periodical._id}
-                      checked={periodical.completed}
-                      onChange={() => {}}
-                      onClick={() => {
-                        onCompleteSubmit(periodical._id, !periodical.completed);
-                      }}
-                      type="checkbox"
-                    />
-                    <label></label>
-                  </div>
+            </div>
+            <div className="row">
+              <div className="column right aligned">
+                <div
+                  style={{
+                    transform: "scale(2)",
+                    bottom: "-3px",
+                    paddingRight: "5px",
+                  }}
+                  className="ui checkbox"
+                >
+                  <input
+                    id={periodical._id}
+                    checked={periodical.completed}
+                    onChange={() => {}}
+                    onClick={() => {
+                      onCompleteSubmit(periodical._id, !periodical.completed);
+                    }}
+                    type="checkbox"
+                  />
+                  <label></label>
                 </div>
-              </div>
-              <div className="column four wide">
                 <EditPeriodicalModal
                   removePeriodical={() => removePeriodical(periodical._id)}
-                  editPeriodical={(updatedItem) =>
+                  editTask={(updatedItem) =>
                     editPeriodical(periodical._id, updatedItem)
                   }
                   itemProps={periodical}
@@ -247,7 +248,6 @@ const PeriodicalList = ({ filter }) => {
 
   return (
     <Fragment>
-      <ToastContainer />
       <form onSubmit={handleSubmit}>
         <div className="ui grid container equal width">
           <div className="column row">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import Modal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
 import CategoryDropdown from "../categoryDropdown";
@@ -33,9 +33,9 @@ const EditTaskModal = (props) => {
   };
 
   return (
-    <div>
-      <button className="ui right floated button" onClick={openModal}>
-        <i style={{ margin: "0px" }} className="cog icon"></i>
+    <Fragment>
+      <button className="ui floated button" onClick={openModal}>
+        <i style={{ margin: "0px" }} className="cog icon black"></i>
       </button>
       <Modal
         isOpen={modalIsOpen}
@@ -118,7 +118,7 @@ const EditTaskModal = (props) => {
           </button>
         </form>
       </Modal>
-    </div>
+    </Fragment>
   );
 };
 

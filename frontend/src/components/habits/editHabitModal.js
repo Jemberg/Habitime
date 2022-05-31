@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import Modal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -62,9 +62,9 @@ const EditHabitModal = (props) => {
   ];
 
   return (
-    <div>
+    <Fragment>
       <button className="right floated ui button" onClick={openModal}>
-        <i style={{ margin: "0px" }} className="cog icon"></i>
+        <i style={{ margin: "0px" }} className="cog icon black"></i>
       </button>
       <Modal
         isOpen={modalIsOpen}
@@ -135,10 +135,6 @@ const EditHabitModal = (props) => {
           <button
             className="ui button green"
             onClick={() => {
-              // handleCategoryChange();
-              // TODO: frequencyChange refreshes page on submission, have to fix.
-              // TODO: category does not send to back-end.
-              // handleFrequencyChange();
               console.log("ONCLICK HABIT: ", habit);
               console.log("ONCLICK CATEGORY:", category);
               setHabit({ ...habit, category: `${category}` });
@@ -162,7 +158,7 @@ const EditHabitModal = (props) => {
           </button>
         </form>
       </Modal>
-    </div>
+    </Fragment>
   );
 };
 

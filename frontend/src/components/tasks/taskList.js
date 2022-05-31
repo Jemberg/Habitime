@@ -141,7 +141,7 @@ const TaskList = ({ filter }) => {
       completed: item.completed,
       category: item.category,
       priority: item.priority,
-      dueDate: item.dueDate /* .toUTCString() */,
+      dueDate: item.dueDate,
     });
 
     console.log(raw);
@@ -205,30 +205,31 @@ const TaskList = ({ filter }) => {
         <div style={{ margin: "0px" }} className="ui segment">
           <div className="ui grid container stackable equal width">
             <div className="row">
-              <div className="column left aligned eight wide">
+              <div className="column left aligned">
                 <Task key={task._id} item={task}></Task>
               </div>
-
-              <div className="column four wide" style={{ padding: "10px" }}>
-                <div>
-                  <div
-                    style={{ transform: "scale(2)" }}
-                    className="ui fitted checkbox"
-                  >
-                    <input
-                      id={task._id}
-                      checked={task.completed}
-                      onChange={() => {}}
-                      onClick={() => {
-                        onCompleteSubmit(task._id, !task.completed);
-                      }}
-                      type="checkbox"
-                    />
-                    <label></label>
-                  </div>
+            </div>
+            <div className="row">
+              <div className="column right aligned">
+                <div
+                  style={{
+                    transform: "scale(2)",
+                    bottom: "-3px",
+                    paddingRight: "5px",
+                  }}
+                  className="ui checkbox"
+                >
+                  <input
+                    id={task._id}
+                    checked={task.completed}
+                    onChange={() => {}}
+                    onClick={() => {
+                      onCompleteSubmit(task._id, !task.completed);
+                    }}
+                    type="checkbox"
+                  />
+                  <label></label>
                 </div>
-              </div>
-              <div className="column four wide">
                 <EditTaskModal
                   removeTask={() => removeTask(task._id)}
                   editTask={(updatedItem) => editTask(task._id, updatedItem)}
@@ -243,7 +244,6 @@ const TaskList = ({ filter }) => {
 
   return (
     <Fragment>
-      <ToastContainer />
       <form onSubmit={handleSubmit}>
         <div className="ui grid container equal width">
           <div className="column row">

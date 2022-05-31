@@ -13,6 +13,8 @@ const Settings = () => {
   const [confirmPass, setConfirmPass] = useState("");
   const [credentials, setCredentials] = useState({});
 
+  const [userStatistics, setUserStatistics] = useState({});
+
   let navigate = useNavigate();
 
   const handleConfirmPass = (event) => {
@@ -81,6 +83,24 @@ const Settings = () => {
 
         console.log(parsed.categories);
         setCategoryList(parsed.categories);
+      })
+      .catch((error) => {
+        console.log("error", error);
+        toast.error(error.message);
+      });
+
+    fetch(`${process.env.REACT_APP_API_URL}/users/me`, requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const parsed = JSON.parse(result);
+        console.log(parsed);
+
+        if (!parsed.success) {
+          throw new Error(`There was an error: ${parsed.error}`);
+        }
+
+        console.log(parsed.user);
+        setUserStatistics(parsed.user);
       })
       .catch((error) => {
         console.log("error", error);
@@ -392,10 +412,27 @@ const Settings = () => {
               >
                 Log Out All Devices
               </button>
-              <ToastContainer />
+              <h2 className="ui header">User Statistics:</h2>
+              <table class="ui celled table">
+                <tbody>
+                  <tr>
+                    <td>Tasks Done This Week</td>
+                    <td>{userStatistics.doneTasks}</td>
+                  </tr>
+                  <tr>
+                    <td>Periodical Tasks Done This Week</td>
+                    <td>{userStatistics.doneRecurring}</td>
+                  </tr>
+                  <tr>
+                    <td>Habits Done This Week</td>
+                    <td>{userStatistics.doneHabits}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
+        <ToastContainer />
       </Fragment>
     </Layout>
   );

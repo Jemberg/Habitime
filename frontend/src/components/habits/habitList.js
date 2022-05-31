@@ -6,6 +6,7 @@ import { checkAuthentication } from "../../auth/auth";
 import Layout from "../layout";
 import Habit from "./habit";
 import EditHabitModal from "./editHabitModal";
+import EditPeriodicalModal from "../periodical/editPeriodicalModal";
 
 const HabitList = ({ filter }) => {
   var myHeaders = new Headers();
@@ -207,41 +208,43 @@ const HabitList = ({ filter }) => {
         <div style={{ margin: "0px" }} className="ui segment">
           <div className="ui grid container stackable equal width">
             <div className="row">
-              <div className="left aligned eight wide column">
+              <div className="column left aligned">
                 <Habit key={habit._id} item={habit}></Habit>
               </div>
-
-              <div className="column four wide">
-                <button
-                  onClick={() => {
-                    onPositiveHabit(habit);
-                  }}
-                  className="right floated ui button"
-                >
-                  <i style={{ margin: "0px" }} className="plus circle icon"></i>
-                </button>
-                <button
-                  onClick={() => {
-                    onNegativeHabit(habit);
-                  }}
-                  className="right floated ui button"
-                >
-                  <i
-                    style={{ margin: "0px" }}
-                    className="minus circle icon"
-                  ></i>
-                </button>
-                <label></label>
-              </div>
-              <div className="column four wide">
-                <div style={{ transform: "" }}>
+            </div>
+            <div className="row">
+              <div className="column right aligned">
+                <div className="column wide">
                   <EditHabitModal
-                    removeHabit={() => removeHabit(habit._id)}
-                    editHabit={(updatedItem) =>
+                    removePeriodical={() => removeHabit(habit._id)}
+                    editPeriodical={(updatedItem) =>
                       editHabit(habit._id, updatedItem)
                     }
                     itemProps={habit}
                   ></EditHabitModal>
+                  <button
+                    onClick={() => {
+                      onNegativeHabit(habit);
+                    }}
+                    className="right floated ui button red"
+                  >
+                    <i
+                      style={{ margin: "0px" }}
+                      className="minus circle icon black"
+                    ></i>
+                  </button>
+                  <button
+                    onClick={() => {
+                      onPositiveHabit(habit);
+                    }}
+                    className="right floated ui button green"
+                  >
+                    <i
+                      style={{ margin: "0px" }}
+                      className="plus circle icon black"
+                    ></i>
+                  </button>
+                  <label></label>
                 </div>
               </div>
             </div>
@@ -252,7 +255,6 @@ const HabitList = ({ filter }) => {
 
   return (
     <Fragment>
-      <ToastContainer />
       <form onSubmit={handleSubmit}>
         <div className="ui grid container equal width">
           <div className="column row">

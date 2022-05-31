@@ -6,7 +6,7 @@ const auth = require("../middleware/auth"); /* TODO: Change auth to authenticate
 const router = new express.Router();
 
 router.get("/users/me", auth, async (req, res) => {
-  res.send(req.user);
+  res.send({ success: true, user: req.user });
 });
 
 router.post("/users", async (req, res) => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import Modal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
 import { Dropdown } from "semantic-ui-react";
@@ -59,9 +59,9 @@ const EditPeriodicalModal = (props) => {
   ];
 
   return (
-    <div>
-      <button className="ui right floated button" onClick={openModal}>
-        <i style={{ margin: "0px" }} className="cog icon"></i>
+    <Fragment>
+      <button className="ui button" onClick={openModal}>
+        <i style={{ margin: "0px" }} className="cog icon black"></i>
       </button>
       <Modal
         isOpen={modalIsOpen}
@@ -148,7 +148,7 @@ const EditPeriodicalModal = (props) => {
           </button>
         </form>
       </Modal>
-    </div>
+    </Fragment>
   );
 };
 
