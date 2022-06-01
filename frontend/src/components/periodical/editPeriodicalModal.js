@@ -60,7 +60,7 @@ const EditPeriodicalModal = (props) => {
 
   return (
     <Fragment>
-      <button className="ui button" onClick={openModal}>
+      <button type="button" className="ui button" onClick={openModal}>
         <i style={{ margin: "0px" }} className="cog icon black"></i>
       </button>
       <Modal
@@ -83,7 +83,8 @@ const EditPeriodicalModal = (props) => {
           </div>
           <div className="field">
             <label>Description</label>
-            <input
+            <textarea
+              style={{ fontFamily: "inherit", fontSize: "inherit" }}
               onChange={handleChange}
               type="text"
               name="description"
@@ -120,6 +121,7 @@ const EditPeriodicalModal = (props) => {
             />
           </div>
           <button
+            type="button"
             className="ui button green"
             onClick={(e) => {
               e.preventDefault();
@@ -135,6 +137,7 @@ const EditPeriodicalModal = (props) => {
             Confirm Changes
           </button>
           <button
+            type="button"
             className="ui button red"
             onClick={() => {
               props.removePeriodical();
@@ -143,7 +146,7 @@ const EditPeriodicalModal = (props) => {
           >
             Delete
           </button>
-          <button className="ui button" onClick={closeModal}>
+          <button type="button" className="ui button" onClick={closeModal}>
             Cancel
           </button>
         </form>

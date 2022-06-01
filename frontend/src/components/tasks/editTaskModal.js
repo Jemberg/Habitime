@@ -34,7 +34,7 @@ const EditTaskModal = (props) => {
 
   return (
     <Fragment>
-      <button className="ui floated button" onClick={openModal}>
+      <button type="button" className="ui floated button" onClick={openModal}>
         <i style={{ margin: "0px" }} className="cog icon black"></i>
       </button>
       <Modal
@@ -57,7 +57,8 @@ const EditTaskModal = (props) => {
           </div>
           <div className="field">
             <label>Description</label>
-            <input
+            <textarea
+              style={{ fontFamily: "inherit", fontSize: "inherit" }}
               onChange={handleChange}
               type="text"
               name="description"
@@ -92,6 +93,7 @@ const EditTaskModal = (props) => {
             />
           </div>
           <button
+            type="button"
             className="ui button green"
             onClick={() => {
               handleCategoryChange();
@@ -105,6 +107,7 @@ const EditTaskModal = (props) => {
             Confirm Changes
           </button>
           <button
+            type="button"
             className="ui button red"
             onClick={() => {
               props.removeTask();
@@ -113,7 +116,7 @@ const EditTaskModal = (props) => {
           >
             Delete
           </button>
-          <button className="ui button" onClick={closeModal}>
+          <button type="button" className="ui button" onClick={closeModal}>
             Cancel
           </button>
         </form>

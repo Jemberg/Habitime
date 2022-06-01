@@ -223,6 +223,7 @@ const HabitList = ({ filter }) => {
                     itemProps={habit}
                   ></EditHabitModal>
                   <button
+                    type="button"
                     onClick={() => {
                       onNegativeHabit(habit);
                     }}
@@ -234,6 +235,7 @@ const HabitList = ({ filter }) => {
                     ></i>
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       onPositiveHabit(habit);
                     }}

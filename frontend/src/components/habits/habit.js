@@ -7,6 +7,7 @@ const Habit = ({ item }) => {
     month: "long",
     day: "numeric",
   };
+
   return (
     <Fragment>
       <h2>{item.name}</h2>

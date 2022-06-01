@@ -63,7 +63,11 @@ const EditHabitModal = (props) => {
 
   return (
     <Fragment>
-      <button className="right floated ui button" onClick={openModal}>
+      <button
+        type="button"
+        className="right floated ui button"
+        onClick={openModal}
+      >
         <i style={{ margin: "0px" }} className="cog icon black"></i>
       </button>
       <Modal
@@ -86,7 +90,8 @@ const EditHabitModal = (props) => {
           </div>
           <div className="field">
             <label>Description</label>
-            <input
+            <textarea
+              style={{ fontFamily: "inherit", fontSize: "inherit" }}
               onChange={handleChange}
               type="text"
               name="description"
@@ -133,6 +138,7 @@ const EditHabitModal = (props) => {
             />
           </div>
           <button
+            type="button"
             className="ui button green"
             onClick={(e) => {
               e.preventDefault();
@@ -146,6 +152,7 @@ const EditHabitModal = (props) => {
             Confirm Changes
           </button>
           <button
+            type="button"
             className="ui button red"
             onClick={() => {
               props.removeHabit();
@@ -154,7 +161,7 @@ const EditHabitModal = (props) => {
           >
             Delete
           </button>
-          <button className="ui button" onClick={closeModal}>
+          <button type="button" className="ui button" onClick={closeModal}>
             Cancel
           </button>
         </form>
