@@ -9,9 +9,9 @@ const router = new express.Router();
 router.get("/categories", auth, async (request, response) => {
   try {
     const categories = await Category.find({ createdBy: request.user._id });
-    response.status(200).send({ success: true, categories: categories });
+    response.status(200).send({ categories: categories });
   } catch (error) {
-    response.status(500).send({ success: false, error: error.message });
+    response.status(500).send({ error: error.message });
   }
 });
 
@@ -26,14 +26,12 @@ router.get("/categories/:id", auth, async (request, response) => {
     });
 
     if (!category) {
-      return response
-        .status(404)
-        .send({ success: false, error: "Category not found." });
+      return response.status(404).send({ error: "Category not found." });
     }
 
-    response.status(200).send({ success: true, category: category });
+    response.status(200).send({ category: category });
   } catch (error) {
-    response.status(500).send({ success: false, error: error.message });
+    response.status(500).send({ error: error.message });
   }
 });
 
@@ -45,9 +43,9 @@ router.post("/categories", auth, async (request, response) => {
 
   try {
     await category.save();
-    response.status(201).send({ success: true, category: category });
+    response.status(201).send({ category: category });
   } catch (error) {
-    response.status(400).send({ success: false, error: error.message });
+    response.status(400).send({ error: error.message });
   }
 });
 
@@ -65,9 +63,7 @@ router.patch("/categoties/:id", auth, async (request, response) => {
   });
 
   if (!isValid) {
-    return response
-      .status(400)
-      .send({ success: false, error: "Updates are invalid." });
+    return response.status(400).send({ error: "Updates are invalid." });
   }
 
   try {
@@ -77,9 +73,7 @@ router.patch("/categoties/:id", auth, async (request, response) => {
     });
 
     if (!category) {
-      return response
-        .status(404)
-        .send({ success: false, error: "Category not found." });
+      return response.status(404).send({ error: "Category not found." });
     }
 
     requestedUpdates.forEach((update) => {
@@ -88,9 +82,9 @@ router.patch("/categoties/:id", auth, async (request, response) => {
 
     await category.save();
 
-    response.status(200).send({ success: true, category: category });
+    response.status(200).send({ category: category });
   } catch (error) {
-    response.status(400).send({ success: false, error: error.message });
+    response.status(400).send({ error: error.message });
   }
 });
 
@@ -102,14 +96,12 @@ router.delete("/categories/:id", auth, async (request, response) => {
     });
 
     if (!category) {
-      return response
-        .status(404)
-        .send({ success: false, error: "Category not found." });
+      return response.status(404).send({ error: "Category not found." });
     }
 
-    response.status(200).send({ success: true, category: category });
+    response.status(200).send({ category: category });
   } catch (error) {
-    response.status(500).send({ success: false, error: error.message });
+    response.status(500).send({ error: error.message });
   }
 });
 

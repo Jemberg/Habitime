@@ -134,7 +134,8 @@ const EditHabitModal = (props) => {
           </div>
           <button
             className="ui button green"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
               console.log("ONCLICK HABIT: ", habit);
               console.log("ONCLICK CATEGORY:", category);
               setHabit({ ...habit, category: `${category}` });

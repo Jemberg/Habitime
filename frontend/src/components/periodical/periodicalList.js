@@ -19,16 +19,18 @@ const PeriodicalList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/periodical`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        console.log(parsed.periodicals);
-        setPeriodicalList(parsed.periodicals);
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        console.log(result.periodicals);
+        setPeriodicalList(result.periodicals);
       })
       .catch((error) => {
         console.log("error", error);
@@ -84,18 +86,18 @@ const PeriodicalList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/periodical`, requestOptions)
-      .then((response) => response.text())
-
-      .then((result) => {
-        const parsed = JSON.parse(result);
-        console.log(parsed);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
         toast.success("Periodical has been created!");
-        setPeriodicalList((oldList) => [...oldList, parsed.periodical]);
+        setPeriodicalList((oldList) => [...oldList, result.periodical]);
       })
       .catch((error) => {
         console.log("error", error);
@@ -113,17 +115,18 @@ const PeriodicalList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/periodical/${id}`, requestOptions)
-      .then((response) => response.text())
-
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
         console.log(
-          `Periodical deleted with name of: ${parsed.periodical.name}`
+          `Periodical deleted with name of: ${result.periodical.name}`
         );
         toast.success("Periodical has been deleted!");
         setPeriodicalList((oldList) =>
@@ -132,6 +135,7 @@ const PeriodicalList = ({ filter }) => {
       })
       .catch((error) => {
         console.log("error", error);
+        toast.error(error.message);
       });
   };
 
@@ -156,20 +160,21 @@ const PeriodicalList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/periodical/${id}`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result);
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
         // Delete periodical, then add updated periodical back in, this is not very efficient lol.
         setPeriodicalList((oldList) =>
           oldList.filter((item) => item._id !== id)
         );
-        setPeriodicalList((oldList) => [...oldList, parsed.periodical]);
+        setPeriodicalList((oldList) => [...oldList, result.periodical]);
       })
       .catch((error) => {
         console.log("error", error);
@@ -234,7 +239,7 @@ const PeriodicalList = ({ filter }) => {
                 </div>
                 <EditPeriodicalModal
                   removePeriodical={() => removePeriodical(periodical._id)}
-                  editTask={(updatedItem) =>
+                  editPeriodical={(updatedItem) =>
                     editPeriodical(periodical._id, updatedItem)
                   }
                   itemProps={periodical}

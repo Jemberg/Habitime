@@ -23,16 +23,18 @@ const TaskList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/tasks`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        console.log(parsed.tasks);
-        setTaskList(parsed.tasks);
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        console.log(result.tasks);
+        setTaskList(result.tasks);
       })
       .catch((error) => {
         console.log("error", error);
@@ -58,7 +60,6 @@ const TaskList = ({ filter }) => {
 
   const onCompleteSubmit = (id, completed) => {
     console.log(id, completed);
-    // document.getElementById(id).checked = !completed;
     const toastCompleted = completed ? "Completed" : "Uncompleted";
     toast.success(`Task has been ${toastCompleted}!`);
     editTask(id, { completed: completed });
@@ -83,18 +84,18 @@ const TaskList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/tasks`, requestOptions)
-      .then((response) => response.text())
-
-      .then((result) => {
-        const parsed = JSON.parse(result);
-        console.log(parsed);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
         toast.success("Task has been created!");
-        setTaskList((oldList) => [...oldList, parsed.task]);
+        setTaskList((oldList) => [...oldList, result.task]);
       })
       .catch((error) => {
         console.log("error", error);
@@ -112,21 +113,23 @@ const TaskList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/tasks/${id}`, requestOptions)
-      .then((response) => response.text())
-
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        console.log(`Task deleted with name of: ${parsed.task.name}`);
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        console.log(`Task deleted with name of: ${result.task.name}`);
         toast.success("Task has been deleted!");
         setTaskList((oldList) => oldList.filter((item) => item._id !== id));
       })
       .catch((error) => {
         console.log("error", error);
+        toast.error(error.message);
       });
   };
 
@@ -154,20 +157,21 @@ const TaskList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/tasks/${id}`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result);
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        console.log(`Task edited with name of: ${parsed.task.name}`);
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        console.log(`Task edited with name of: ${result.task.name}`);
 
         // Delete task, then add updated task back in, this is not very efficient lol.
         setTaskList((oldList) => oldList.filter((item) => item._id !== id));
-        setTaskList((oldList) => [...oldList, parsed.task]);
+        setTaskList((oldList) => [...oldList, result.task]);
       })
       .catch((error) => {
         console.log("error", error);

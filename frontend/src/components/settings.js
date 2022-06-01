@@ -73,16 +73,18 @@ const Settings = () => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/categories`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        console.log(parsed.categories);
-        setCategoryList(parsed.categories);
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        console.log(result.categories);
+        setCategoryList(result.categories);
       })
       .catch((error) => {
         console.log("error", error);
@@ -90,17 +92,18 @@ const Settings = () => {
       });
 
     fetch(`${process.env.REACT_APP_API_URL}/users/me`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        const parsed = JSON.parse(result);
-        console.log(parsed);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        console.log(parsed.user);
-        setUserStatistics(parsed.user);
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        console.log(result.user);
+        setUserStatistics(result.user);
       })
       .catch((error) => {
         console.log("error", error);
@@ -123,17 +126,19 @@ const Settings = () => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/users/me`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
         toast.success("User has been updated!");
-        localStorage.setItem("user", JSON.stringify(parsed.user));
-        setCredentials((oldList) => [parsed.credentials]);
+        localStorage.setItem("user", JSON.stringify(result.user));
+        setCredentials((oldList) => [result.credentials]);
       })
       .catch((error) => {
         console.log("error", error);
@@ -155,17 +160,18 @@ const Settings = () => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/categories`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        const parsed = JSON.parse(result);
-        console.log(parsed);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
         toast.success("Category has been created!");
-        setCategoryList((oldList) => [...oldList, parsed.category]);
+        setCategoryList((oldList) => [...oldList, result.category]);
       })
       .catch((error) => {
         console.log("error", error);
@@ -181,21 +187,23 @@ const Settings = () => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/categories/${id}`, requestOptions)
-      .then((response) => response.text())
-
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        console.log(`Category deleted with name of: ${parsed.category.name}`);
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        console.log(`Category deleted with name of: ${result.category.name}`);
         toast.success("Category has been deleted!");
         setCategoryList((oldList) => oldList.filter((item) => item._id !== id));
       })
       .catch((error) => {
         console.log("error", error);
+        toast.error(error.message);
       });
   };
 
@@ -208,20 +216,23 @@ const Settings = () => {
 
     // TODO: Check if works.
     fetch(`${process.env.REACT_APP_API_URL}/users/me`, requestOptions)
-      .then((response) => response.text())
-
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      // TODO: Check if user deletion still works.
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
         toast.success("User has been deleted!");
-        console.log(`User deleted with name of: ${parsed.user.username}`);
+        console.log(`User deleted with name of: ${result.user.username}`);
       })
       .catch((error) => {
         console.log("error", error);
+        toast.error(error.message);
       });
   };
 
@@ -233,14 +244,17 @@ const Settings = () => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/users/logoutAll`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      // TODO: Check if logging out all accounts still works.
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
         toast.success("All devices successfully logged out!");
         console.log(
           `User with name of: ${

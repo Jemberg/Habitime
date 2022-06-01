@@ -39,22 +39,24 @@ const Login = () => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/users/login`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
+
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
         console.log(credentials);
-        authenticate(parsed, () => {
+        authenticate(result, () => {
           setCredentials({ password: "", username: "" });
         });
       })
       .catch((error) => {
         console.log("error", error);
         toast.error(error.message);
-        setCredentials({ password: "", username: "" });
       });
   };
 

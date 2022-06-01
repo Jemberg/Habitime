@@ -21,16 +21,14 @@ const HabitList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/habits`, requestOptions)
-      .then((response) => response.text())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`There was an error: ${response.text()}`);
+        } else return response.json();
+      })
       .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
-        }
-
-        console.log(parsed.habits);
-        setHabitList(parsed.habits);
+        console.log(result.habits);
+        setHabitList(result.habits);
       })
       .catch((error) => {
         console.log("error", error);
@@ -64,7 +62,6 @@ const HabitList = ({ filter }) => {
     console.log(`Adding habit with the ID of ${checkAuthentication()._id}`);
 
     var raw = JSON.stringify({
-      // user: checkAuthentication()._id,
       name: item.name,
     });
 
@@ -78,18 +75,18 @@ const HabitList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/habits`, requestOptions)
-      .then((response) => response.text())
-
-      .then((result) => {
-        const parsed = JSON.parse(result);
-        console.log(parsed);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
         toast.success("Habit has been created!");
-        setHabitList((oldList) => [...oldList, parsed.habit]);
+        setHabitList((oldList) => [...oldList, result.habit]);
       })
       .catch((error) => {
         console.log("error", error);
@@ -107,21 +104,23 @@ const HabitList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/habits/${id}`, requestOptions)
-      .then((response) => response.text())
-
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        console.log(`Habit deleted with name of: ${parsed.habit.name}`);
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        console.log(`Habit deleted with name of: ${result.habit.name}`);
         toast.success("Habit has been deleted!");
         setHabitList((oldList) => oldList.filter((item) => item._id !== id));
       })
       .catch((error) => {
         console.log("error", error);
+        toast.error(error.message);
       });
   };
 
@@ -149,20 +148,21 @@ const HabitList = ({ filter }) => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/habits/${id}`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result);
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        console.log(`Habit edited with name of: ${parsed.habit.name}`);
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        console.log(`Habit edited with name of: ${result.habit.name}`);
         toast.success("Habit has been edited!");
 
         setHabitList((oldList) => oldList.filter((item) => item._id !== id));
-        setHabitList((oldList) => [...oldList, parsed.habit]);
+        setHabitList((oldList) => [...oldList, result.habit]);
       })
       .catch((error) => {
         console.log("error", error);
@@ -216,8 +216,8 @@ const HabitList = ({ filter }) => {
               <div className="column right aligned">
                 <div className="column wide">
                   <EditHabitModal
-                    removePeriodical={() => removeHabit(habit._id)}
-                    editPeriodical={(updatedItem) =>
+                    removeHabit={() => removeHabit(habit._id)}
+                    editHabit={(updatedItem) =>
                       editHabit(habit._id, updatedItem)
                     }
                     itemProps={habit}

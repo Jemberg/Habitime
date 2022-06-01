@@ -6,7 +6,7 @@ const auth = require("../middleware/auth"); /* TODO: Change auth to authenticate
 const router = new express.Router();
 
 router.get("/users/me", auth, async (req, res) => {
-  res.send({ success: true, user: req.user });
+  res.send({ user: req.user });
 });
 
 router.post("/users", async (req, res) => {
@@ -29,9 +29,9 @@ router.post("/users", async (req, res) => {
     const token = await user.generateAuthToken();
     const value = req.body.value;
 
-    res.status(201).send({ success: true, user: user, token: token });
+    res.status(201).send({ user: user, token: token });
   } catch (error) {
-    res.status(400).send({ success: false, error: error.message });
+    res.status(400).send({ error: error.message });
   }
 });
 
@@ -48,13 +48,12 @@ router.post("/users/login", async (req, res) => {
     const token = await user.generateAuthToken();
 
     res.status(200).send({
-      success: true,
       user: user,
       token: token,
     });
   } catch (error) {
     console.log(error);
-    res.status(400).send({ success: false, error: error.message });
+    res.status(400).send({ error: error.message });
   }
 });
 
@@ -66,9 +65,9 @@ router.post("/users/logout", auth, async (req, res) => {
 
     await req.user.save();
 
-    res.status(200).send({ success: true });
+    res.status(200).send();
   } catch (error) {
-    res.status(500).send({ success: false, error: error.message });
+    res.status(500).send({ error: error.message });
   }
 });
 
@@ -77,9 +76,9 @@ router.post("/users/logoutAll", auth, async (req, res) => {
     // Removes all tokens that are saved for user.
     req.user.tokens = [];
     await req.user.save();
-    res.status(200).send({ success: true });
+    res.status(200).send();
   } catch (error) {
-    res.status(500).send({ success: false, error: error.message });
+    res.status(500).send({ error: error.message });
   }
 });
 
@@ -93,9 +92,7 @@ router.patch("/users/me", auth, async (req, res) => {
   });
 
   if (!isValidOperation) {
-    return res
-      .status(400)
-      .send({ success: false, error: "At least one update is invalid." });
+    return res.status(400).send({ error: "At least one update is invalid." });
   }
 
   try {
@@ -120,18 +117,18 @@ router.patch("/users/me", auth, async (req, res) => {
 
     await user.save();
 
-    res.status(200).send({ success: true, user: user });
+    res.status(200).send({ user: user });
   } catch (error) {
-    res.status(400).send({ success: false, error: error.message });
+    res.status(400).send({ error: error.message });
   }
 });
 
 router.delete("/users/me", auth, async (req, res) => {
   try {
     await req.user.remove();
-    res.status(200).send({ success: true, user: req.user });
+    res.status(200).send({ user: req.user });
   } catch (error) {
-    res.status(500).send({ success: false, error: error.message });
+    res.status(500).send({ error: error.message });
   }
 });
 

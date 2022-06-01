@@ -57,15 +57,17 @@ const Register = () => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/users`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        authenticate(parsed, () => {
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        authenticate(result, () => {
           setCredentials({ password: "", email: "", username: "" });
           setConfirmPass("");
         });

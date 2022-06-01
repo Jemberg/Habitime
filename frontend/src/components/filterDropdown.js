@@ -4,7 +4,6 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
 const FilterDropdown = ({ filter, setFilter }) => {
-  // TODO: Make switch cases also feature categories so items can be filtered by category.
   const [filterOptions, setFilterOptions] = useState([
     {
       key: "All",
@@ -26,19 +25,19 @@ const FilterDropdown = ({ filter, setFilter }) => {
     },
     {
       key: "highPriority",
-      text: "High Priority",
+      text: "High Priority (3)",
       value: "highPriority",
       label: { color: "grey", empty: true, circular: true },
     },
     {
       key: "mediumPriority",
-      text: "Medium Priority",
+      text: "Medium Priority (2)",
       value: "mediumPriority",
       label: { color: "orange", empty: true, circular: true },
     },
     {
       key: "lowPriority",
-      text: "Low Priority",
+      text: "Low Priority (1)",
       value: "lowPriority",
       label: { color: "violet", empty: true, circular: true },
     },
@@ -56,19 +55,21 @@ const FilterDropdown = ({ filter, setFilter }) => {
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/categories`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        const parsed = JSON.parse(result);
-
-        if (!parsed.success) {
-          throw new Error(`There was an error: ${parsed.error}`);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
 
-        const catOptions = parsed.categories.map((e) => {
+        return response.json().then((error) => {
+          throw new Error(error.error);
+        });
+      })
+      .then((result) => {
+        const catOptions = result.categories.map((category) => {
           return {
-            key: e._id,
-            text: e.name,
-            value: e._id,
+            key: category._id,
+            text: category.name,
+            value: category._id,
             label: { color: "black", empty: true, circular: true },
           };
         });
