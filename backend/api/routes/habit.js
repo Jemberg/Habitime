@@ -14,7 +14,6 @@ router.get("/habits", auth, async (request, response) => {
 
     for (let habit of habits) {
       if (habit.nextReset < new Date()) {
-        console.log("Task due date being set further and task is uncompleted.");
         let nextReset = moment().utc().toDate();
         switch (habit.resetFrequency) {
           case "Monthly":
@@ -49,13 +48,8 @@ router.get("/habits", auth, async (request, response) => {
       createdBy: request.user._id,
     });
 
-    checkedHabits.forEach((habit) =>
-      console.log("Habits sent to the front end:", habit.nextReset)
-    );
-
     response.status(200).send({ habits: checkedHabits });
   } catch (error) {
-    console.log(error);
     response.status(500).send({ error: error.message });
   }
 });
@@ -133,8 +127,6 @@ router.patch("/habits/:id", auth, async (request, response) => {
       break;
   }
 
-  console.log(request.body);
-
   const isValid = requestedUpdates.every((update) => {
     return allowedUpdates.includes(update);
   });
@@ -154,7 +146,6 @@ router.patch("/habits/:id", auth, async (request, response) => {
 
       user.doneHabits++;
       user.save();
-      console.log("doneHabits:", user.doneHabits);
     }
 
     if (!habit) {
@@ -162,7 +153,6 @@ router.patch("/habits/:id", auth, async (request, response) => {
     }
 
     if (request.body.nextReset) {
-      console.log(request.body.nextReset);
       habit["nextReset"] = request.body.nextReset;
       await habit.save();
     }

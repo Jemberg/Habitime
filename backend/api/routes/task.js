@@ -12,7 +12,6 @@ router.get("/tasks", auth, async (req, res) => {
     const tasks = await Task.find({ createdBy: req.user._id });
     res.status(200).send({ tasks: tasks });
   } catch (error) {
-    console.log(error);
     res.status(500).send({ error: error.message });
   }
 });
@@ -49,7 +48,6 @@ router.patch("/tasks/:id", auth, async (req, res) => {
 
     user.doneTasks++;
     user.save();
-    console.log("doneTasks:", user.doneTasks);
   }
 
   const isValid = requestedUpdates.every((update) => {
@@ -84,8 +82,6 @@ router.patch("/tasks/:id", auth, async (req, res) => {
 
 router.delete("/tasks/:id", auth, async (req, res) => {
   try {
-    console.log(req.params.id);
-    console.log(req.user._id);
 
     const task = await Task.findOneAndDelete({
       _id: req.params.id,

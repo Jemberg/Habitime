@@ -15,7 +15,6 @@ router.get("/periodical", auth, async (request, response) => {
 
     for (let periodical of periodicals) {
       if (periodical.nextDueDate < new Date()) {
-        console.log("Task due date being set further and task is uncompleted.");
         let newDueDate = moment().utc().toDate();
         switch (periodical.frequency) {
           case "Monthly":
@@ -50,13 +49,8 @@ router.get("/periodical", auth, async (request, response) => {
       createdBy: request.user._id,
     });
 
-    checkedPeriodicals.forEach((periodical) =>
-      console.log("Periodicals sent to the front end:", periodical.nextDueDate)
-    );
-
     response.status(200).send({ periodicals: checkedPeriodicals });
   } catch (error) {
-    console.log(error);
     response.status(500).send({ error: error.message });
   }
 });
@@ -109,8 +103,6 @@ router.patch("/periodical/:id", auth, async (request, response) => {
     "nextDueDate",
   ];
 
-  console.log(request.body.frequency);
-
   switch (request.body.frequency) {
     case "Monthly":
       request.body.nextDueDate = moment()
@@ -142,7 +134,6 @@ router.patch("/periodical/:id", auth, async (request, response) => {
 
     user.doneRecurring++;
     user.save();
-    console.log("doneRecurring:", user.doneRecurring);
   }
 
   const isValid = requestedUpdates.every((update) => {
@@ -166,7 +157,6 @@ router.patch("/periodical/:id", auth, async (request, response) => {
     }
 
     if (request.body.nextDueDate) {
-      console.log(request.body.nextDueDate);
       periodical["nextDueDate"] = request.body.nextDueDate;
       await periodical.save();
     }

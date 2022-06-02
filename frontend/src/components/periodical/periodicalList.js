@@ -29,11 +29,9 @@ const PeriodicalList = ({ filter }) => {
         });
       })
       .then((result) => {
-        console.log(result.periodicals);
         setPeriodicalList(result.periodicals);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   }, []);
@@ -59,7 +57,6 @@ const PeriodicalList = ({ filter }) => {
   };
 
   const onCompleteSubmit = (id, completed) => {
-    console.log(id, completed);
     const toastCompleted = completed ? "Completed" : "Uncompleted";
     toast.success(`Periodical has been ${toastCompleted}!`);
     editPeriodical(id, { completed: completed });
@@ -68,15 +65,10 @@ const PeriodicalList = ({ filter }) => {
   const [periodicalList, setPeriodicalList] = useState([]);
 
   const addPeriodical = async (item) => {
-    console.log(
-      `Adding periodical with the ID of ${checkAuthentication()._id}`
-    );
 
     var raw = JSON.stringify({
       name: item.name,
     });
-
-    console.log(`addPeriodical payload contents are: ${raw}`);
 
     var requestOptions = {
       method: "POST",
@@ -100,13 +92,11 @@ const PeriodicalList = ({ filter }) => {
         setPeriodicalList((oldList) => [...oldList, result.periodical]);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
 
   const removePeriodical = async (id) => {
-    console.log(`Deleting item with the ID of ${id}`);
 
     var requestOptions = {
       method: "DELETE",
@@ -125,16 +115,12 @@ const PeriodicalList = ({ filter }) => {
         });
       })
       .then((result) => {
-        console.log(
-          `Periodical deleted with name of: ${result.periodical.name}`
-        );
         toast.success("Periodical has been deleted!");
         setPeriodicalList((oldList) =>
           oldList.filter((item) => item._id !== id)
         );
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
@@ -149,8 +135,6 @@ const PeriodicalList = ({ filter }) => {
       dueDate: item.dueDate /* .toUTCString() */,
       frequency: item.frequency,
     });
-
-    //console.log(raw);
 
     var requestOptions = {
       method: "PATCH",
@@ -177,7 +161,6 @@ const PeriodicalList = ({ filter }) => {
         setPeriodicalList((oldList) => [...oldList, result.periodical]);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };

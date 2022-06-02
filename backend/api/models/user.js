@@ -68,11 +68,6 @@ const userSchema = new mongoose.Schema({
     default: 0,
     min: 0,
   },
-  // TODO: Add custom start day that all tasks start on and count day/week/month from for habits/recurring tasks.
-  isNotified: {
-    type: Boolean,
-    default: true,
-  },
   tokens: [
     {
       token: {
@@ -95,7 +90,10 @@ userSchema.methods.toJSON = function () {
 
 userSchema.methods.generateAuthToken = async function () {
   // TODO: Hide secret in .env file that does not get pushed to Github.
-  const token = jwt.sign({ _id: this._id.toString() }, process.env.JWT_SECRET);
+  const token = jwt.sign(
+    { _id: this._id.toString() },
+    `${process.env.JWT_SECRET}`
+  );
 
   this.tokens = this.tokens.concat({
     token: token,

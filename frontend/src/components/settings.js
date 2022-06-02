@@ -23,7 +23,6 @@ const Settings = () => {
 
   const handleChange = (event) => {
     setCredentials({ ...credentials, [event.target.name]: event.target.value });
-    console.log(credentials);
   };
 
   const handleSubmit = () => {
@@ -40,7 +39,6 @@ const Settings = () => {
     // Checks if password matches confirmPassword.
     if (credentials.password !== confirmPass) {
       setCredentials({});
-      console.log("confirmPass", confirmPass);
       toast.error("Passwords did not match, please try again.");
     }
   };
@@ -48,9 +46,7 @@ const Settings = () => {
   // TODO: Add color selector and saving for category.
 
   const handleCategoryChange = (event) => {
-    console.log(event.target.name, " ", event.target.value);
     setNewCategory({ ...newCategory, [event.target.name]: event.target.value });
-    console.log("newCategory: ", newCategory);
   };
 
   const handleCategorySubmit = (event) => {
@@ -83,11 +79,9 @@ const Settings = () => {
         });
       })
       .then((result) => {
-        console.log(result.categories);
         setCategoryList(result.categories);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
 
@@ -102,11 +96,9 @@ const Settings = () => {
         });
       })
       .then((result) => {
-        console.log(result.user);
         setUserStatistics(result.user);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   }, []);
@@ -141,7 +133,6 @@ const Settings = () => {
         setCredentials((oldList) => [result.credentials]);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
@@ -174,7 +165,6 @@ const Settings = () => {
         setCategoryList((oldList) => [...oldList, result.category]);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
@@ -197,12 +187,10 @@ const Settings = () => {
         });
       })
       .then((result) => {
-        console.log(`Category deleted with name of: ${result.category.name}`);
-        toast.success("Category has been deleted!");
+        toast.success(`Category ${result.category.name} has been deleted`);
         setCategoryList((oldList) => oldList.filter((item) => item._id !== id));
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
@@ -228,10 +216,8 @@ const Settings = () => {
       })
       .then((result) => {
         toast.success("User has been deleted!");
-        console.log(`User deleted with name of: ${result.user.username}`);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
@@ -256,17 +242,11 @@ const Settings = () => {
       })
       .then((result) => {
         toast.success("All devices successfully logged out!");
-        console.log(
-          `User with name of: ${
-            checkAuthentication().username
-          } has been logged out`
-        );
         Cookie.remove("token");
         localStorage.removeItem("user");
         navigate("/login");
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
@@ -296,7 +276,7 @@ const Settings = () => {
   return (
     <Layout>
       <Fragment>
-        {!checkAuthentication() ? <Navigate to="/login" /> : null};
+        {!checkAuthentication() ? <Navigate to="/login" /> : null}
         <div className="ui grid container stackable equal width">
           <div className="row">
             <div className="column">

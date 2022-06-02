@@ -73,7 +73,6 @@ const Register = () => {
         });
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
         setCredentials({ password: "", email: "", username: "" });
         setConfirmPass("");
@@ -93,7 +92,7 @@ const Register = () => {
             }`}
         </style>
       </Helmet>
-      {checkAuthentication() ? <Navigate to="/" /> : null};
+      {checkAuthentication() ? <Navigate to="/" /> : null}
       <div
         style={{ height: "95vh" }}
         className="ui middle aligned center aligned grid"

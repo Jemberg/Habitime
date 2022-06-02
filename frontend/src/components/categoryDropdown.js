@@ -41,7 +41,6 @@ const CategoryDropdown = ({ handleCategoryChange, defaultValue }) => {
         setOptions(catOptions);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   }, []);

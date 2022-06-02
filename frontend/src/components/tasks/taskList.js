@@ -33,11 +33,9 @@ const TaskList = ({ filter }) => {
         });
       })
       .then((result) => {
-        console.log(result.tasks);
         setTaskList(result.tasks);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   }, []);
@@ -59,7 +57,6 @@ const TaskList = ({ filter }) => {
   };
 
   const onCompleteSubmit = (id, completed) => {
-    console.log(id, completed);
     const toastCompleted = completed ? "Completed" : "Uncompleted";
     toast.success(`Task has been ${toastCompleted}!`);
     editTask(id, { completed: completed });
@@ -68,13 +65,10 @@ const TaskList = ({ filter }) => {
   const [taskList, setTaskList] = useState([]);
 
   const addTask = async (item) => {
-    console.log(`Adding task with the ID of ${checkAuthentication()._id}`);
 
     var raw = JSON.stringify({
       name: item.name,
     });
-
-    console.log(`addTask payload contents are: ${raw}`);
 
     var requestOptions = {
       method: "POST",
@@ -98,13 +92,11 @@ const TaskList = ({ filter }) => {
         setTaskList((oldList) => [...oldList, result.task]);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
 
   const removeTask = async (id) => {
-    console.log(`Deleting item with the ID of ${id}`);
 
     var requestOptions = {
       method: "DELETE",
@@ -123,19 +115,15 @@ const TaskList = ({ filter }) => {
         });
       })
       .then((result) => {
-        console.log(`Task deleted with name of: ${result.task.name}`);
         toast.success("Task has been deleted!");
         setTaskList((oldList) => oldList.filter((item) => item._id !== id));
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
 
   const editTask = async (id, item) => {
-    console.log(`Editing item with the ID of ${id}`);
-    console.log(item);
     // TODO: Put item back in corresponding index spot it was in before.
 
     var raw = JSON.stringify({
@@ -146,8 +134,6 @@ const TaskList = ({ filter }) => {
       priority: item.priority,
       dueDate: item.dueDate,
     });
-
-    console.log(raw);
 
     var requestOptions = {
       method: "PATCH",
@@ -167,14 +153,12 @@ const TaskList = ({ filter }) => {
         });
       })
       .then((result) => {
-        console.log(`Task edited with name of: ${result.task.name}`);
 
         // Delete task, then add updated task back in, this is not very efficient lol.
         setTaskList((oldList) => oldList.filter((item) => item._id !== id));
         setTaskList((oldList) => [...oldList, result.task]);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };

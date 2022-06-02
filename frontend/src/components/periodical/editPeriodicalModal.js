@@ -26,7 +26,6 @@ const EditPeriodicalModal = (props) => {
   const [periodical, setPeriodical] = useState({});
 
   const handleChange = (event) => {
-    console.log("handleChange()", event.target.name, " ", event.target.value);
     setPeriodical({ ...periodical, [event.target.name]: event.target.value });
   };
 
@@ -36,7 +35,6 @@ const EditPeriodicalModal = (props) => {
 
   const handleFrequencyChange = (event, data) => {
     // event.preventDefault();
-    console.log("handleFrequencyChange()", data.value);
     setPeriodical({ ...periodical, frequency: data.value });
   };
 
@@ -127,7 +125,6 @@ const EditPeriodicalModal = (props) => {
               e.preventDefault();
               // TODO: frequencyChange refreshes page on submission, have to fix.
               // TODO: category does not send to back-end.
-              console.log("periodical: ", periodical);
               // setPeriodical({ ...periodical, category: category });
               props.editPeriodical(periodical);
               toast.success("Periodical has been edited!");

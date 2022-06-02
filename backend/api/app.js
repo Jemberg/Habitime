@@ -11,6 +11,8 @@ const taskRouter = require("./routes/task");
 const periodicalRouter = require("./routes/periodical");
 const habitRouter = require("./routes/habit");
 
+const notificationRouter = require("./routes/notification");
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -28,6 +30,8 @@ app.use(categoryRouter);
 app.use(taskRouter);
 app.use(periodicalRouter);
 app.use(habitRouter);
+
+app.use(notificationRouter);
 
 app.listen(port, () => {
   console.log("Server is up on port " + port);

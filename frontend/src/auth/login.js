@@ -17,7 +17,6 @@ const Login = () => {
 
   const handleChange = (event) => {
     setCredentials({ ...credentials, [event.target.name]: event.target.value });
-    console.log(credentials);
   };
 
   const handleSubmit = (event) => {
@@ -49,13 +48,11 @@ const Login = () => {
         });
       })
       .then((result) => {
-        console.log(credentials);
         authenticate(result, () => {
           setCredentials({ password: "", username: "" });
         });
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
@@ -73,7 +70,7 @@ const Login = () => {
             }`}
         </style>
       </Helmet>
-      {checkAuthentication() ? <Navigate to="/" /> : null};
+      {checkAuthentication() ? <Navigate to="/" /> : null}
       <div>
         <div
           style={{ height: "95vh" }}

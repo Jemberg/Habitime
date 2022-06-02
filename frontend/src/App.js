@@ -10,6 +10,26 @@ import HabitList from "./components/habits/habitList";
 import FilterDropdown from "./components/filterDropdown";
 
 const App = () => {
+  let deferredPrompt;
+
+  if (!window.Promise) {
+    window.Promise = Promise;
+  }
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .catch(function (err) {
+        console.log(err);
+      });
+  }
+
+  window.addEventListener("beforeinstallprompt", function (event) {
+    event.preventDefault();
+    deferredPrompt = event;
+    return false;
+  });
+
   const [filter, setFilter] = useState("All");
 
   return (

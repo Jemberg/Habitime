@@ -76,12 +76,9 @@ const FilterDropdown = ({ filter, setFilter }) => {
         setFilterOptions([...filterOptions, ...catOptions]);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   }, []);
-
-  console.log("filterOptions: ", filterOptions);
 
   return (
     <Dropdown

@@ -8,7 +8,7 @@ const auth = async (req, res, next) => {
 
     const verification = jwt.verify(
       token,
-      process.env.JWT_SECRET
+      `${process.env.JWT_SECRET}`
     ); /* TODO: Change secret. */
 
     if (verification) {

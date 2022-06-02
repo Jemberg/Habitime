@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { authenticate, logOut } from "../auth/auth";
+import { askForNotificationPermission } from "../push-notifications";
 
 const Layout = ({ children }) => {
   const navBar = () => (
@@ -20,6 +21,14 @@ const Layout = ({ children }) => {
       </Link>
 
       <div className="right menu">
+        <div
+          class="big ui basic icon button"
+          onClick={() => {
+            askForNotificationPermission();
+          }}
+        >
+          <i class="bell icon" style={{ color: "white" }}></i>
+        </div>
         <Link
           to="/login"
           onClick={() => {

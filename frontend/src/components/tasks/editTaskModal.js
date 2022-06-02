@@ -22,7 +22,6 @@ const EditTaskModal = (props) => {
   }
 
   const handleChange = (event) => {
-    console.log(event.target.name, " ", event.target.value);
     setTask({ ...task, [event.target.name]: event.target.value });
   };
 
@@ -97,10 +96,8 @@ const EditTaskModal = (props) => {
             className="ui button green"
             onClick={() => {
               handleCategoryChange();
-              console.log("Right before saving, category:", category);
               props.editTask(task);
               toast.success("Task has been edited!");
-              console.log(task); // selected category from categoryDropdown
               closeModal();
             }}
           >

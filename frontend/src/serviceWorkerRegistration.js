@@ -69,10 +69,6 @@ function registerValidSW(swUrl, config) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
-              console.log(
-                "New content is available and will be used when all " +
-                  "tabs for this page are closed. See https://cra.link/PWA."
-              );
 
               // Execute callback
               if (config && config.onUpdate) {
@@ -138,4 +134,17 @@ export function unregister() {
         console.error(error.message);
       });
   }
+}
+
+export function urlBase64ToUint8Array(base64String) {
+  let padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  let base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
+
+  let rawData = window.atob(base64);
+  let outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }

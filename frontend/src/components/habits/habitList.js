@@ -27,11 +27,9 @@ const HabitList = ({ filter }) => {
         } else return response.json();
       })
       .then((result) => {
-        console.log(result.habits);
         setHabitList(result.habits);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   }, []);
@@ -59,13 +57,10 @@ const HabitList = ({ filter }) => {
   const [habitList, setHabitList] = useState([]);
 
   const addHabit = async (item) => {
-    console.log(`Adding habit with the ID of ${checkAuthentication()._id}`);
 
     var raw = JSON.stringify({
       name: item.name,
     });
-
-    console.log(`addHabit payload contents are: ${raw}`);
 
     var requestOptions = {
       method: "POST",
@@ -89,13 +84,11 @@ const HabitList = ({ filter }) => {
         setHabitList((oldList) => [...oldList, result.habit]);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
 
   const removeHabit = async (id) => {
-    console.log(`Deleting habit with the ID of ${id}`);
 
     var requestOptions = {
       method: "DELETE",
@@ -114,19 +107,15 @@ const HabitList = ({ filter }) => {
         });
       })
       .then((result) => {
-        console.log(`Habit deleted with name of: ${result.habit.name}`);
-        toast.success("Habit has been deleted!");
+        toast.success(`Habit ${result.habit.name} has been deleted!`);
         setHabitList((oldList) => oldList.filter((item) => item._id !== id));
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };
 
   const editHabit = async (id, item) => {
-    console.log(`Editing habit with the ID of ${id}`);
-    console.log(item);
 
     var raw = JSON.stringify({
       name: item.name,
@@ -137,8 +126,6 @@ const HabitList = ({ filter }) => {
       goal: item.goal,
       resetFrequency: item.resetFrequency,
     });
-
-    console.log(raw);
 
     var requestOptions = {
       method: "PATCH",
@@ -158,14 +145,12 @@ const HabitList = ({ filter }) => {
         });
       })
       .then((result) => {
-        console.log(`Habit edited with name of: ${result.habit.name}`);
-        toast.success("Habit has been edited!");
+        toast.success(`Habit ${result.habit.name} has been edited!`);
 
         setHabitList((oldList) => oldList.filter((item) => item._id !== id));
         setHabitList((oldList) => [...oldList, result.habit]);
       })
       .catch((error) => {
-        console.log("error", error);
         toast.error(error.message);
       });
   };

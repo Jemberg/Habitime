@@ -26,7 +26,6 @@ const EditHabitModal = (props) => {
   const [habit, setHabit] = useState({});
 
   const handleChange = (event) => {
-    console.log(event.target.name, " ", event.target.value);
     setHabit({ ...habit, [event.target.name]: event.target.value });
   };
 
@@ -37,7 +36,6 @@ const EditHabitModal = (props) => {
   };
 
   const handleFrequencyChange = (event, data) => {
-    console.log(data.value);
     if (data.value) {
       setHabit({ ...habit, resetFrequency: data.value });
     }
@@ -142,8 +140,6 @@ const EditHabitModal = (props) => {
             className="ui button green"
             onClick={(e) => {
               e.preventDefault();
-              console.log("ONCLICK HABIT: ", habit);
-              console.log("ONCLICK CATEGORY:", category);
               setHabit({ ...habit, category: `${category}` });
               props.editHabit(habit);
               closeModal();
