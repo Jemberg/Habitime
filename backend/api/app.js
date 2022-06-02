@@ -3,6 +3,10 @@ require("../config/database");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const scheduleLib = require("node-schedule");
+
+const User = require("./models/user");
+const schedule = require("./middleware/schedule");
 
 const userRouter = require("./routes/user");
 const categoryRouter = require("./routes/category");
@@ -21,6 +25,7 @@ app.use(
     origin: "*",
   })
 );
+
 app.use(express.json());
 app.use(helmet());
 
@@ -35,4 +40,13 @@ app.use(notificationRouter);
 
 app.listen(port, () => {
   console.log("Server is up on port " + port);
+
+  // Every monday at 00:00.
+  scheduleLib.scheduleJob("00 00 * * MON", () => {
+    User.resetStats();
+  });
+  // Every sunday at 12:00.
+  scheduleLib.scheduleJob("00 12 * * SUN", () => {
+    schedule.sendMessage();
+  });
 });

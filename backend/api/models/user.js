@@ -76,7 +76,6 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
-  // TODO: If enough time is left, implement isAdmin with admin panel.
 });
 
 userSchema.methods.toJSON = function () {
@@ -102,6 +101,18 @@ userSchema.methods.generateAuthToken = async function () {
   await this.save();
 
   return token;
+};
+
+userSchema.statics.resetStats = async () => {
+  await User.updateMany(
+    {},
+    {
+      doneTasks: 0,
+      doneRecurring: 0,
+      doneHabits: 0,
+    }
+  );
+  console.log("All user statistics set to 0.");
 };
 
 userSchema.statics.findByCredentials = async (username, password) => {

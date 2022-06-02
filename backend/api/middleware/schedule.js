@@ -13,7 +13,8 @@ admin.initializeApp({
 
 const schedule = {};
 
-const sendMessage = function () {
+// TODO: Change to arrow function, this isn't used anyways.
+schedule.sendMessage = function () {
   webpush.setVapidDetails(
     `mailto:${process.env.VAPID_EMAIL}`,
     `${process.env.VAPID_PUBLICKEY}`,
@@ -35,7 +36,10 @@ const sendMessage = function () {
         };
 
         webpush
-          .sendNotification(pushConfig, "Push notification message goes here.")
+          .sendNotification(
+            pushConfig,
+            "Make sure to check out your user statistics in the settings tab before they reset on Monday!."
+          )
           .catch((err) => {
             console.log("Error: ", err);
           });

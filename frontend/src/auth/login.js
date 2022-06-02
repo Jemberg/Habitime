@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet";
 
 import { authenticate, checkAuthentication } from "./auth";
 
-import Background from "../assets/layered-waves-haikei.svg";
+import Background from "../assets/layered-waves-haikei.png";
 import Logo from "../assets/logo_transparent.png";
 
 // TODO: Remove transparent border for the form.

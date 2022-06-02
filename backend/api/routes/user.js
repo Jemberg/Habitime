@@ -10,7 +10,6 @@ router.get("/users/me", auth, async (req, res) => {
 });
 
 router.post("/users", async (req, res) => {
-  // TODO: Validate what properties can be in a req.body.
   const user = new User(req.body);
 
   try {
@@ -42,7 +41,6 @@ router.post("/users/login", async (req, res) => {
       req.body.password
     );
 
-    // When user logs in and is issued a token, updates lastLogin to current time.
     user.lastLogin = Date.now();
 
     const token = await user.generateAuthToken();

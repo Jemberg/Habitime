@@ -1,4 +1,5 @@
 const express = require("express");
+const moment = require("moment");
 
 const Task = require("../models/task");
 const User = require("../models/user");
@@ -10,6 +11,7 @@ const router = new express.Router();
 router.get("/tasks", auth, async (req, res) => {
   try {
     const tasks = await Task.find({ createdBy: req.user._id });
+
     res.status(200).send({ tasks: tasks });
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -82,7 +84,6 @@ router.patch("/tasks/:id", auth, async (req, res) => {
 
 router.delete("/tasks/:id", auth, async (req, res) => {
   try {
-
     const task = await Task.findOneAndDelete({
       _id: req.params.id,
       createdBy: req.user._id,
