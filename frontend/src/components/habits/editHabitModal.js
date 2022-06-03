@@ -117,7 +117,6 @@ const EditHabitModal = (props) => {
               placeholder={props.itemProps.goal}
             />
           </div>
-          {/* TODO: Category list must be imported via API. */}
           <div className="field">
             <label>Category</label>
             <CategoryDropdown

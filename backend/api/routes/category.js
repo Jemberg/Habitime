@@ -52,10 +52,7 @@ router.post("/categories", auth, async (request, response) => {
 router.patch("/categoties/:id", auth, async (request, response) => {
   const requestedUpdates = Object.keys(request.body);
 
-  const allowedUpdates = [
-    "name",
-    "color",
-  ]; /* TODO: Update allowed updates list. */
+  const allowedUpdates = ["name", "color"];
 
   const isValid = requestedUpdates.every((update) => {
     return allowedUpdates.includes(update);

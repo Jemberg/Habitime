@@ -1,7 +1,7 @@
 const express = require("express");
 
 const User = require("../models/user");
-const auth = require("../middleware/auth"); /* TODO: Change auth to authenticate. */
+const auth = require("../middleware/auth");
 
 const router = new express.Router();
 

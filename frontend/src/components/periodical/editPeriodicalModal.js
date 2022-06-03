@@ -100,7 +100,6 @@ const EditPeriodicalModal = (props) => {
               placeholder={props.itemProps.priority}
             />
           </div>
-          {/* TODO: Category list must be imported via API. */}
           <div className="field">
             <label>Category</label>
             <CategoryDropdown
@@ -123,9 +122,6 @@ const EditPeriodicalModal = (props) => {
             className="ui button green"
             onClick={(e) => {
               e.preventDefault();
-              // TODO: frequencyChange refreshes page on submission, have to fix.
-              // TODO: category does not send to back-end.
-              // setPeriodical({ ...periodical, category: category });
               props.editPeriodical(periodical);
               toast.success("Periodical has been edited!");
               closeModal();

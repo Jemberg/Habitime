@@ -210,9 +210,7 @@ const Settings = () => {
       redirect: "follow",
     };
 
-    // TODO: Check if works.
     fetch(`${process.env.REACT_APP_API_URL}/users/me`, requestOptions)
-      // TODO: Check if user deletion still works.
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -271,7 +269,6 @@ const Settings = () => {
               Delete
             </div>
           </div>
-          {/* TODO: Add editing option as well. */}
           <div className="content">{category.name}</div>
         </div>
       </div>

@@ -21,8 +21,7 @@ router.get("/tasks", auth, async (req, res) => {
 // Create task.
 router.post("/tasks", auth, async (request, response) => {
   const task = new Task({
-    name: request.body
-      .name /* TODO: Check if adding other parameters breaks this. */,
+    name: request.body.name,
     createdBy: request.user._id,
   });
 

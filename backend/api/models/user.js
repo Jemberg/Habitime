@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema({
     trim: true,
     validate(value) {
       if (value.length < 8) {
-        // TODO: Add extra password rules, not just length.
         throw new Error("Password is too short, has to be at least 7 symbols.");
       }
     },
