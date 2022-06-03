@@ -151,7 +151,6 @@ const PeriodicalList = ({ filter }) => {
         });
       })
       .then((result) => {
-        // Delete periodical, then add updated periodical back in, this is not very efficient lol.
         setPeriodicalList((oldList) =>
           oldList.filter((item) => item._id !== id)
         );
