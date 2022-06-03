@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import Modal from "react-modal";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 import CategoryDropdown from "../categoryDropdown";
 import { Dropdown } from "semantic-ui-react";

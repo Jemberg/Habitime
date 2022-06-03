@@ -8,6 +8,7 @@ const auth = require("../middleware/auth");
 
 const router = new express.Router();
 
+// Get all habits.
 router.get("/habits", auth, async (request, response) => {
   try {
     let habits = await Habit.find({ createdBy: request.user._id });
@@ -54,24 +55,7 @@ router.get("/habits", auth, async (request, response) => {
   }
 });
 
-router.get("/habits/:id", auth, async (request, response) => {
-  try {
-    const habit = await Habit.findOne({
-      _id: request.params.id,
-      createdBy: request.user._id,
-    });
-
-    if (!habit) {
-      // TODO: Add json responses where possible in code.
-      return response.status(404).send({ error: "Habit not found." });
-    }
-
-    response.status(200).send({ habit: habit });
-  } catch (error) {
-    response.status(500).send({ error: error.message });
-  }
-});
-
+// Creating habit.
 router.post("/habits", auth, async (request, response) => {
   const habit = new Habit({
     ...request.body,
@@ -86,7 +70,7 @@ router.post("/habits", auth, async (request, response) => {
   }
 });
 
-// TODO: Change up the function more.
+// Updating habit.
 router.patch("/habits/:id", auth, async (request, response) => {
   const requestedUpdates = Object.keys(request.body);
 
@@ -169,6 +153,7 @@ router.patch("/habits/:id", auth, async (request, response) => {
   }
 });
 
+// Deleting habit.
 router.delete("/habits/:id", auth, async (request, response) => {
   try {
     const habit = await Habit.findOneAndDelete({

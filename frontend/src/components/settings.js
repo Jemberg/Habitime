@@ -9,19 +9,14 @@ import Cookie from "js-cookie";
 const Settings = () => {
   const [categoryList, setCategoryList] = useState({});
   const [newCategory, setNewCategory] = useState({});
-
-  const [confirmPass, setConfirmPass] = useState("");
   const [credentials, setCredentials] = useState({});
 
   const [userStatistics, setUserStatistics] = useState({});
 
   let navigate = useNavigate();
 
-  const handleConfirmPass = (event) => {
-    setConfirmPass(event.target.value);
-  };
-
   const handleChange = (event) => {
+    console.log(credentials);
     setCredentials({ ...credentials, [event.target.name]: event.target.value });
   };
 
@@ -35,25 +30,38 @@ const Settings = () => {
     });
   };
 
-  const handlePasswordChange = (credentials) => {
-    // Checks if password matches confirmPassword.
-    if (credentials.password !== confirmPass) {
-      setCredentials({});
-      toast.error("Passwords did not match, please try again.");
-    }
-  };
-
-  // TODO: Add color selector and saving for category.
-
   const handleCategoryChange = (event) => {
     setNewCategory({ ...newCategory, [event.target.name]: event.target.value });
+  };
+
+  const handlePasswordSubmit = (event) => {
+    event.preventDefault();
+
+    if (!credentials.password.trim() || !credentials.confirmPassword.trim()) {
+      toast.error("One of the password fields is empty, please try again.");
+      setCredentials({});
+      return;
+    }
+
+    if (credentials.password !== credentials.confirmPassword) {
+      setCredentials({});
+      toast.error("Passwords did not match, please try again.");
+      return;
+    }
+
+    updateUser(credentials);
+    handleSubmit();
   };
 
   const handleCategorySubmit = (event) => {
     event.preventDefault();
 
-    addCategory(newCategory);
+    if (!newCategory.name.trim()) {
+      toast.error("Please enter a name for your category!");
+      return;
+    }
 
+    addCategory(newCategory);
     setNewCategory({ name: "" });
   };
 
@@ -130,7 +138,7 @@ const Settings = () => {
       .then((result) => {
         toast.success("User has been updated!");
         localStorage.setItem("user", JSON.stringify(result.user));
-        setCredentials((oldList) => [result.credentials]);
+        setCredentials(() => [result.credentials]);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -215,7 +223,7 @@ const Settings = () => {
         });
       })
       .then((result) => {
-        toast.success("User has been deleted!");
+        toast.success("User account has been deleted!");
       })
       .catch((error) => {
         toast.error(error.message);
@@ -230,23 +238,20 @@ const Settings = () => {
     };
 
     fetch(`${process.env.REACT_APP_API_URL}/users/logoutAll`, requestOptions)
-      // TODO: Check if logging out all accounts still works.
       .then((response) => {
         if (response.ok) {
-          return response.json();
+          return;
         }
 
         return response.json().then((error) => {
           throw new Error(error.error);
         });
       })
-      .then((result) => {
+      .then(() => {
         toast.success("All devices successfully logged out!");
-        Cookie.remove("token");
-        localStorage.removeItem("user");
-        navigate("/login");
       })
       .catch((error) => {
+        console.log(error);
         toast.error(error.message);
       });
   };
@@ -341,7 +346,7 @@ const Settings = () => {
                   />
                   <label>Confirm New Password</label>
                   <input
-                    onChange={handleConfirmPass}
+                    onChange={handleChange}
                     type="password"
                     name="confirmPassword"
                     value={credentials.confirmPassword}
@@ -351,10 +356,7 @@ const Settings = () => {
                 <button
                   className="ui button green"
                   onClick={(e) => {
-                    e.preventDefault();
-                    handlePasswordChange(credentials);
-                    updateUser(credentials);
-                    handleSubmit();
+                    handlePasswordSubmit(e);
                   }}
                 >
                   Confirm New Password
@@ -402,6 +404,9 @@ const Settings = () => {
                 className="ui button red"
                 onClick={() => {
                   logOutAll();
+                  logOut(() => {
+                    navigate("/login");
+                  });
                 }}
               >
                 Log Out All Devices

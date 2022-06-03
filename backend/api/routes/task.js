@@ -7,6 +7,7 @@ const auth = require("../middleware/auth");
 
 const router = new express.Router();
 
+// Get all tasks.
 router.get("/tasks", auth, async (req, res) => {
   try {
     const tasks = await Task.find({ createdBy: req.user._id });
@@ -17,6 +18,7 @@ router.get("/tasks", auth, async (req, res) => {
   }
 });
 
+// Create task.
 router.post("/tasks", auth, async (request, response) => {
   const task = new Task({
     name: request.body
@@ -32,7 +34,7 @@ router.post("/tasks", auth, async (request, response) => {
   }
 });
 
-// TODO: Change up the function more.
+// Edit task.
 router.patch("/tasks/:id", auth, async (req, res) => {
   const requestedUpdates = Object.keys(req.body);
   const allowedUpdates = [
@@ -81,6 +83,7 @@ router.patch("/tasks/:id", auth, async (req, res) => {
   }
 });
 
+// Delete task.
 router.delete("/tasks/:id", auth, async (req, res) => {
   try {
     const task = await Task.findOneAndDelete({

@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -8,7 +8,6 @@ import { authenticate, checkAuthentication } from "./auth";
 import Background from "../assets/layered-waves-haikei.svg";
 import Logo from "../assets/logo_transparent.png";
 
-// TODO: Remove transparent border for the form.
 const Login = () => {
   const [credentials, setCredentials] = useState({
     username: "",

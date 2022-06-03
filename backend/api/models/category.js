@@ -31,7 +31,6 @@ categorySchema.pre("remove", async function (next) {
   const category = this;
 
   // Removes deleted category from all tasks that have it.
-  // TODO: Add habits and periodical tasks as well.
   await Task.updateMany({ category: category.name }, { category: undefined });
   await Habit.updateMany({ category: category.name }, { category: undefined });
   await Periodical.updateMany(

@@ -32,23 +32,18 @@ const habitSchema = new mongoose.Schema({
     type: Number,
     default: 1,
   },
-  // TODO: Frequency is set through the front-end.
   resetFrequency: {
     type: String,
     default: "Weekly",
   },
-  // TODO: NextReset not available for the user, set in the back-end based on frequency.
   nextReset: {
     type: Date,
-    // TODO: Probably won't work, but has to add 7 days to current date.
     default: getNextMonday().setHours(0, 0, 0, 0),
   },
-  // Habit cannot be completed, the goal is used for the statistics to see how well the user has done.
 });
 
-// TODO: Fix finding next monday.
+// https://bobbyhadz.com/blog/javascript-get-date-of-next-monday
 function getNextMonday() {
-  // https://bobbyhadz.com/blog/javascript-get-date-of-next-monday
   const nextMonday = new Date();
   nextMonday.setDate(
     // Add 1 to the day of the week, cause getDay returns values that start with Sunday, 0.

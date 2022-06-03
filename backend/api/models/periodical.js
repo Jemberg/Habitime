@@ -38,14 +38,13 @@ const periodicalSchema = new mongoose.Schema({
     type: String,
     default: "Daily",
   },
-  // TODO: Make sure that if frequency is not daily, nextDueDate is different as well.
-  // TODO: nextDueDate triggers a function that unchecks the complete state and adds completed task to user total score.
   nextDueDate: {
     type: Date,
     default: getNextDay().setHours(0, 0, 0, 0),
   },
 });
 
+// Gets next day.
 function getNextDay() {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);

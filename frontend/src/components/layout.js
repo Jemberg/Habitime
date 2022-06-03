@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { authenticate, logOut } from "../auth/auth";
+import { logOut } from "../auth/auth";
 import { askForNotificationPermission } from "../push-notifications";
 
 const Layout = ({ children }) => {

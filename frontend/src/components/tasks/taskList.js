@@ -1,8 +1,7 @@
 import Cookies from "js-cookie";
-import React, { useEffect, useState, Fragment, Section, Form } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import React, { useEffect, useState, Fragment } from "react";
+import { toast } from "react-toastify";
 
-import { checkAuthentication } from "../../auth/auth";
 import Task from "./task";
 import EditTaskModal from "./editTaskModal";
 
@@ -47,7 +46,7 @@ const TaskList = ({ filter }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!item.name || item.name.length === 0) {
+    if (!item.name.trim()) {
       toast.error("Please enter a name for your task!");
       return;
     }
@@ -65,7 +64,6 @@ const TaskList = ({ filter }) => {
   const [taskList, setTaskList] = useState([]);
 
   const addTask = async (item) => {
-
     var raw = JSON.stringify({
       name: item.name,
     });
@@ -97,7 +95,6 @@ const TaskList = ({ filter }) => {
   };
 
   const removeTask = async (id) => {
-
     var requestOptions = {
       method: "DELETE",
       headers: myHeaders,
@@ -114,7 +111,7 @@ const TaskList = ({ filter }) => {
           throw new Error(error.error);
         });
       })
-      .then((result) => {
+      .then(() => {
         toast.success("Task has been deleted!");
         setTaskList((oldList) => oldList.filter((item) => item._id !== id));
       })
@@ -124,8 +121,6 @@ const TaskList = ({ filter }) => {
   };
 
   const editTask = async (id, item) => {
-    // TODO: Put item back in corresponding index spot it was in before.
-
     var raw = JSON.stringify({
       name: item.name,
       description: item.description,
@@ -153,7 +148,6 @@ const TaskList = ({ filter }) => {
         });
       })
       .then((result) => {
-
         // Delete task, then add updated task back in, this is not very efficient lol.
         setTaskList((oldList) => oldList.filter((item) => item._id !== id));
         setTaskList((oldList) => [...oldList, result.task]);

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 
 const Habit = ({ item }) => {
   const localDate = new Date(item.nextReset);

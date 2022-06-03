@@ -2,10 +2,10 @@ const _ = require("lodash");
 const webpush = require("web-push");
 const scheduleLib = require("node-schedule");
 const admin = require("firebase-admin");
-const User = require("../models/user");
 
 const serviceAccount = require("../../serviceAccountKey.json");
 
+// Firebase initialization.
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: `${process.env.FIREBASE_DB_URL}`,
@@ -13,7 +13,9 @@ admin.initializeApp({
 
 const schedule = {};
 
-// TODO: Change to arrow function, this isn't used anyways.
+// https://www.udemy.com/course/progressive-web-app-pwa-the-complete-guide/
+// https://izaanjahangir.medium.com/setting-schedule-push-notification-using-node-js-and-mongodb-95f73c00fc2e
+
 schedule.sendMessage = function () {
   webpush.setVapidDetails(
     `mailto:${process.env.VAPID_EMAIL}`,
@@ -47,6 +49,7 @@ schedule.sendMessage = function () {
     });
 };
 
+// Scheduling a notification.
 schedule.createSchedule = async (data) => {
   try {
     const dayOfWeek = data.days.join(",");
@@ -55,9 +58,9 @@ schedule.createSchedule = async (data) => {
     const minutes = timeToSent[1];
     const date = `${minutes} ${hours} * * ${dayOfWeek}`;
 
-    scheduleLib.scheduleJob(date, sendMessage);
-  } catch (e) {
-    throw e;
+    scheduleLib.scheduleJob(date, schedule.sendMessage);
+  } catch (error) {
+    throw new Error(error);
   }
 };
 

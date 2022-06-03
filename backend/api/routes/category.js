@@ -15,8 +15,6 @@ router.get("/categories", auth, async (request, response) => {
   }
 });
 
-// TODO: Each user has to have default categories when they register, could be added to user registration.
-
 // Get category by ID.
 router.get("/categories/:id", auth, async (request, response) => {
   try {
@@ -35,6 +33,7 @@ router.get("/categories/:id", auth, async (request, response) => {
   }
 });
 
+// Category creation.
 router.post("/categories", auth, async (request, response) => {
   const category = new Category({
     ...request.body,
@@ -49,7 +48,7 @@ router.post("/categories", auth, async (request, response) => {
   }
 });
 
-// TODO: Change up the function more.
+// Updating category.
 router.patch("/categoties/:id", auth, async (request, response) => {
   const requestedUpdates = Object.keys(request.body);
 
@@ -88,6 +87,7 @@ router.patch("/categoties/:id", auth, async (request, response) => {
   }
 });
 
+// Deleting category.
 router.delete("/categories/:id", auth, async (request, response) => {
   try {
     const category = await Category.findOneAndDelete({

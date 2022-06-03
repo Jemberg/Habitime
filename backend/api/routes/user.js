@@ -5,10 +5,12 @@ const auth = require("../middleware/auth"); /* TODO: Change auth to authenticate
 
 const router = new express.Router();
 
+// Get user data.
 router.get("/users/me", auth, async (req, res) => {
   res.send({ user: req.user });
 });
 
+// Create user/registration.
 router.post("/users", async (req, res) => {
   const user = new User(req.body);
 
@@ -26,7 +28,6 @@ router.post("/users", async (req, res) => {
 
     await user.save();
     const token = await user.generateAuthToken();
-    const value = req.body.value; /* TODO: Is this necessary? */
 
     res.status(201).send({ user: user, token: token });
   } catch (error) {
@@ -34,6 +35,7 @@ router.post("/users", async (req, res) => {
   }
 });
 
+// Logging in with existing account.
 router.post("/users/login", async (req, res) => {
   try {
     const user = await User.findByCredentials(
@@ -54,6 +56,7 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
+// Log out.
 router.post("/users/logout", auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter((token) => {
@@ -68,6 +71,7 @@ router.post("/users/logout", auth, async (req, res) => {
   }
 });
 
+// Log out all active sessions.
 router.post("/users/logoutAll", auth, async (req, res) => {
   try {
     // Removes all tokens that are saved for user.
@@ -75,10 +79,12 @@ router.post("/users/logoutAll", auth, async (req, res) => {
     await req.user.save();
     res.status(200).send();
   } catch (error) {
+    console.log(error.message);
     res.status(500).send({ error: error.message });
   }
 });
 
+// Update user.
 router.patch("/users/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
 
@@ -120,10 +126,11 @@ router.patch("/users/me", auth, async (req, res) => {
   }
 });
 
+// Delete user.
 router.delete("/users/me", auth, async (req, res) => {
   try {
     await req.user.remove();
-    res.status(200).send({ user: req.user });
+    res.status(200).send();
   } catch (error) {
     res.status(500).send({ error: error.message });
   }

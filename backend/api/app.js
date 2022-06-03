@@ -41,11 +41,11 @@ app.use(notificationRouter);
 app.listen(port, () => {
   console.log("Server is up on port " + port);
 
-  // Every monday at 00:00.
+  // Every monday at 00:00 schedules statistic resetting.
   scheduleLib.scheduleJob("00 00 * * MON", () => {
     User.resetStats();
   });
-  // Every sunday at 12:00.
+  // Every sunday at 12:00 sends out a notification to all subscribed users.
   scheduleLib.scheduleJob("00 12 * * SUN", () => {
     schedule.sendMessage();
   });

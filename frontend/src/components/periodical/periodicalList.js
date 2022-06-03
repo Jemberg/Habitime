@@ -1,8 +1,7 @@
 import Cookies from "js-cookie";
-import React, { useEffect, useState, Fragment, Section, Form } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import React, { useEffect, useState, Fragment } from "react";
+import { toast } from "react-toastify";
 
-import { checkAuthentication } from "../../auth/auth";
 import Periodical from "./periodical";
 import EditPeriodicalModal from "./editPeriodicalModal";
 
@@ -47,7 +46,7 @@ const PeriodicalList = ({ filter }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!item.name || item.name.length === 0) {
+    if (!item.name.trim()) {
       toast.error("Please enter a name for your periodical task!");
       return;
     }
@@ -65,7 +64,6 @@ const PeriodicalList = ({ filter }) => {
   const [periodicalList, setPeriodicalList] = useState([]);
 
   const addPeriodical = async (item) => {
-
     var raw = JSON.stringify({
       name: item.name,
     });
@@ -97,7 +95,6 @@ const PeriodicalList = ({ filter }) => {
   };
 
   const removePeriodical = async (id) => {
-
     var requestOptions = {
       method: "DELETE",
       headers: myHeaders,

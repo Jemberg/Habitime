@@ -8,7 +8,6 @@ import { authenticate, checkAuthentication } from "./auth";
 import Background from "../assets/layered-waves-haikei.svg";
 import Logo from "../assets/logo_transparent.png";
 
-// TODO: Remove transparent border for the form.
 const Register = () => {
   const [confirmPass, setConfirmPass] = useState("");
   const [credentials, setCredentials] = useState({

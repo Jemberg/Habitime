@@ -3,6 +3,7 @@ const schedule = require("../middleware/schedule");
 
 const router = new express.Router();
 
+// Create notification.
 router.post("/notification", async (req, res) => {
   try {
     const payload = {

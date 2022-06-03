@@ -9,6 +9,7 @@ const { utc } = require("moment");
 
 const router = new express.Router();
 
+// Get all periodical tasks.
 router.get("/periodical", auth, async (request, response) => {
   try {
     let periodicals = await Periodical.find({ createdBy: request.user._id });
@@ -55,26 +56,7 @@ router.get("/periodical", auth, async (request, response) => {
   }
 });
 
-router.get("/periodical/:id", auth, async (request, response) => {
-  try {
-    const periodical = await Periodical.findOne({
-      _id: request.params.id,
-      createdBy: request.user._id,
-    });
-
-    if (!periodical) {
-      // TODO: Add json responses where possible in code.
-      return response
-        .status(404)
-        .send({ error: "Periodical task has not been found." });
-    }
-
-    response.status(200).send({ periodical: periodical });
-  } catch (error) {
-    response.status(500).send({ error: error.message });
-  }
-});
-
+// Create periodical
 router.post("/periodical", auth, async (request, response) => {
   const periodical = new Periodical({
     ...request.body,
@@ -89,7 +71,7 @@ router.post("/periodical", auth, async (request, response) => {
   }
 });
 
-// TODO: Change up the function more.
+// Edit periodical.
 router.patch("/periodical/:id", auth, async (request, response) => {
   const requestedUpdates = Object.keys(request.body);
 
@@ -173,6 +155,7 @@ router.patch("/periodical/:id", auth, async (request, response) => {
   }
 });
 
+// Delete periodical
 router.delete("/periodical/:id", auth, async (request, response) => {
   try {
     const periodical = await Periodical.findOneAndDelete({

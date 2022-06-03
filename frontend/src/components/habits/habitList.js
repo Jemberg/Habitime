@@ -1,12 +1,9 @@
 import Cookies from "js-cookie";
-import React, { useEffect, useState, Fragment, Section, Form } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import React, { useEffect, useState, Fragment } from "react";
+import { toast } from "react-toastify";
 
-import { checkAuthentication } from "../../auth/auth";
-import Layout from "../layout";
 import Habit from "./habit";
 import EditHabitModal from "./editHabitModal";
-import EditPeriodicalModal from "../periodical/editPeriodicalModal";
 
 const HabitList = ({ filter }) => {
   var myHeaders = new Headers();
@@ -45,7 +42,7 @@ const HabitList = ({ filter }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!item.name || item.name.length === 0) {
+    if (!item.name.trim()) {
       toast.error("Please enter a name for your habit!");
       return;
     }
@@ -57,7 +54,6 @@ const HabitList = ({ filter }) => {
   const [habitList, setHabitList] = useState([]);
 
   const addHabit = async (item) => {
-
     var raw = JSON.stringify({
       name: item.name,
     });
@@ -89,7 +85,6 @@ const HabitList = ({ filter }) => {
   };
 
   const removeHabit = async (id) => {
-
     var requestOptions = {
       method: "DELETE",
       headers: myHeaders,
@@ -116,7 +111,6 @@ const HabitList = ({ filter }) => {
   };
 
   const editHabit = async (id, item) => {
-
     var raw = JSON.stringify({
       name: item.name,
       description: item.description,
