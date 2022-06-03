@@ -22,12 +22,12 @@ const Layout = ({ children }) => {
 
       <div className="right menu">
         <div
-          class="big ui basic icon button"
+          className="big ui basic icon button"
           onClick={() => {
             askForNotificationPermission();
           }}
         >
-          <i class="bell icon" style={{ color: "white" }}></i>
+          <i className="bell icon" style={{ color: "white" }}></i>
         </div>
         <Link
           to="/login"

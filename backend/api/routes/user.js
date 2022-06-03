@@ -26,7 +26,7 @@ router.post("/users", async (req, res) => {
 
     await user.save();
     const token = await user.generateAuthToken();
-    const value = req.body.value;
+    const value = req.body.value; /* TODO: Is this necessary? */
 
     res.status(201).send({ user: user, token: token });
   } catch (error) {

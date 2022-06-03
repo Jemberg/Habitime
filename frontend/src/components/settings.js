@@ -407,7 +407,7 @@ const Settings = () => {
                 Log Out All Devices
               </button>
               <h2 className="ui header">User Statistics:</h2>
-              <table class="ui celled table">
+              <table className="ui celled table">
                 <tbody>
                   <tr>
                     <td>Tasks Done This Week</td>
