@@ -2,6 +2,8 @@ import React, { Fragment, useState } from "react";
 import Modal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
 import CategoryDropdown from "../categoryDropdown";
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 
 Modal.setAppElement("#root");
 
@@ -23,6 +25,10 @@ const EditTaskModal = (props) => {
 
   const handleChange = (event) => {
     setTask({ ...task, [event.target.name]: event.target.value });
+  };
+
+  const handleDesc = (value) => {
+    setTask({ ...task, description: value });
   };
 
   const [category, setCategory] = useState("");
@@ -56,13 +62,13 @@ const EditTaskModal = (props) => {
           </div>
           <div className="field">
             <label>Description</label>
-            <textarea
+            <SimpleMDE
               style={{ fontFamily: "inherit", fontSize: "inherit" }}
-              onChange={handleChange}
-              type="text"
               name="description"
-              placeholder={props.itemProps.description}
+              onChange={handleDesc}
+              value={props.itemProps.description}
             />
+            ;
           </div>
           <div className="field">
             <label>Priority</label>
