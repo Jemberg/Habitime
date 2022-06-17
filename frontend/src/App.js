@@ -36,33 +36,31 @@ const App = () => {
     <Fragment>
       {checkAuthentication() && (
         <Layout>
-          <Fragment>
-            <div className="ui grid container stackable equal width center aligned">
-              <div className="row">
-                <div className="column">
-                  <h1>Filter</h1>
-                  <FilterDropdown
-                    filter={filter}
-                    setFilter={setFilter}
-                  ></FilterDropdown>
-                </div>
-              </div>
-              <div className="row">
-                <div className="column">
-                  <h1>Tasks</h1>
-                  <TaskList filter={filter}></TaskList>
-                </div>
-                <div className="column">
-                  <h1>Habits</h1>
-                  <HabitList filter={filter}></HabitList>
-                </div>
-                <div className="column">
-                  <h1>Periodical Tasks</h1>
-                  <PeriodicalList filter={filter}></PeriodicalList>
-                </div>
+          <div className="ui grid padded stackable equal width center aligned">
+            <div className="row">
+              <div className="column">
+                <h1>Filter</h1>
+                <FilterDropdown
+                  filter={filter}
+                  setFilter={setFilter}
+                ></FilterDropdown>
               </div>
             </div>
-          </Fragment>
+            <div className="row">
+              <div className="column">
+                <h1>Tasks</h1>
+                <TaskList filter={filter}></TaskList>
+              </div>
+              <div className="column">
+                <h1>Habits</h1>
+                <HabitList filter={filter}></HabitList>
+              </div>
+              <div className="column">
+                <h1>Periodical Tasks</h1>
+                <PeriodicalList filter={filter}></PeriodicalList>
+              </div>
+            </div>
+          </div>
           <ToastContainer />
         </Layout>
       )}

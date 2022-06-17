@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import Modal from "react-modal";
 import { ToastContainer } from "react-toastify";
+import SimpleMDE from "react-simplemde-editor";
 
 import CategoryDropdown from "../categoryDropdown";
 import { Dropdown } from "semantic-ui-react";
@@ -39,6 +40,10 @@ const EditHabitModal = (props) => {
     if (data.value) {
       setHabit({ ...habit, resetFrequency: data.value });
     }
+  };
+
+  const handleDesc = (value) => {
+    setHabit({ ...habit, description: value });
   };
 
   const frequencyOptions = [
@@ -88,12 +93,11 @@ const EditHabitModal = (props) => {
           </div>
           <div className="field">
             <label>Description</label>
-            <textarea
+            <SimpleMDE
               style={{ fontFamily: "inherit", fontSize: "inherit" }}
-              onChange={handleChange}
-              type="text"
               name="description"
-              placeholder={props.itemProps.description}
+              onChange={handleDesc}
+              value={props.itemProps.description}
             />
           </div>
           <div className="field">

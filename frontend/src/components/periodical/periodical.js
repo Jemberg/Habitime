@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import ReactMarkdown from "react-markdown";
 
 const Periodical = ({ item }) => {
   const localDate = new Date(item.nextDueDate);
@@ -10,7 +11,7 @@ const Periodical = ({ item }) => {
   return (
     <Fragment>
       <h2>{item.name}</h2>
-      <p>{item.description}</p>
+      <ReactMarkdown>{item.description}</ReactMarkdown>
       <label className="ui label basic label">
         {item.frequency}, Next Due:{" "}
         {localDate.toLocaleDateString("en-EN", options)}

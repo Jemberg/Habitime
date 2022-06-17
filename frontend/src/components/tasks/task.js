@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import ReactMarkdown from "react-markdown";
 
 const Task = ({ item }) => {
   const localDate = new Date(item.dueDate);
@@ -11,7 +12,7 @@ const Task = ({ item }) => {
   return (
     <Fragment>
       <h2>{item.name}</h2>
-      <p>{item.description}</p>
+      <ReactMarkdown>{item.description}</ReactMarkdown>
       {localDate < new Date() && (
         <label className="ui label red basic label">
           Due: {localDate.toLocaleDateString("en-EN", options)}

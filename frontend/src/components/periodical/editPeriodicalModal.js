@@ -2,6 +2,7 @@ import React, { Fragment, useState } from "react";
 import Modal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
 import { Dropdown } from "semantic-ui-react";
+import SimpleMDE from "react-simplemde-editor";
 
 import CategoryDropdown from "../categoryDropdown";
 
@@ -36,6 +37,10 @@ const EditPeriodicalModal = (props) => {
   const handleFrequencyChange = (event, data) => {
     // event.preventDefault();
     setPeriodical({ ...periodical, frequency: data.value });
+  };
+
+  const handleDesc = (value) => {
+    setPeriodical({ ...periodical, description: value });
   };
 
   const frequencyOptions = [
@@ -81,12 +86,11 @@ const EditPeriodicalModal = (props) => {
           </div>
           <div className="field">
             <label>Description</label>
-            <textarea
+            <SimpleMDE
               style={{ fontFamily: "inherit", fontSize: "inherit" }}
-              onChange={handleChange}
-              type="text"
               name="description"
-              placeholder={props.itemProps.description}
+              onChange={handleDesc}
+              value={props.itemProps.description}
             />
           </div>
           <div className="field">
