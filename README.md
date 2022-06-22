@@ -31,3 +31,6 @@ The application has been fully developed in Javascript, with plans to convert it
 
 To start the back-end, simply type ```npm run dev```, the back-end has two different options for starting: ```npm start``` will start the application in development mode, but to have push notifications work, the front-end has to be built via ```npm run build``` and afterwards ```serve -s build```. 
 
+## Licence
+
+This project is under the GNU General Public Licence v3.0.
